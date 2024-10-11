@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Character : MonoBehaviour
@@ -25,7 +26,7 @@ public class Character : MonoBehaviour
 	private MeshFilter areaOutlineFilter;
 
 	[Header("Movement")]
-	public float speed = 2f;
+	public float speed = 1f;
 	public float turnSpeed = 14f;
 	public TrailRenderer trail;
 	public GameObject trailCollidersHolder;
@@ -88,15 +89,18 @@ public class Character : MonoBehaviour
 				trail.Clear();
 				trail.emitting = true;
 			}
+			Debug.Log("Outside");
 		}
 		else if (count > 0)
 		{
+
+			Debug.Log("Not Outside");
 			GameManager.DeformCharacterArea(this, newAreaVertices);
-			
-			foreach(var character in attackedCharacters)
+
+			foreach (var character in attackedCharacters)
 			{
 				List<Vector3> newCharacterAreaVertices = new List<Vector3>();
-				foreach(var vertex in newAreaVertices)
+				foreach (var vertex in newAreaVertices)
 				{
 					if (GameManager.IsPointInPolygon(new Vector2(vertex.x, vertex.z), Vertices2D(character.areaVertices)))
 					{
@@ -113,7 +117,7 @@ public class Character : MonoBehaviour
 			{
 				trail.Clear();
 				trail.emitting = false;
-			}			
+			}
 			foreach (var trailColl in trailColls)
 			{
 				Destroy(trailColl);
@@ -121,7 +125,6 @@ public class Character : MonoBehaviour
 			trailColls.Clear();
 		}
 	}
-
 	public virtual void FixedUpdate()
 	{
 		rb.AddForce(transform.forward * speed, ForceMode.VelocityChange);
@@ -223,28 +226,14 @@ public class Character : MonoBehaviour
 
 		return closest;
 	}
-   
-	private void OnTriggerEnter(Collider other)
-	{
-		CharacterArea characterArea = other.GetComponent<CharacterArea>();
-		if (characterArea && characterArea != area && !attackedCharacters.Contains(characterArea.character))
-		{
-			attackedCharacters.Add(characterArea.character);
-		}
-
-		if (other.gameObject.layer == 8)
-		{
-			characterArea = other.transform.parent.GetComponent<CharacterArea>();
-			characterArea.character.Die();
-		}
-	}
     
 
-
     
+
+	
     public void Die()
 	{
-		if (player)
+		if (player )
 		{
 			GameManager.gm.GameOver();
 		}
@@ -257,5 +246,21 @@ public class Character : MonoBehaviour
 			Destroy(gameObject);
 		}
 	}
+    private void OnTriggerEnter(Collider other)
+    {
+        CharacterArea characterArea = other.GetComponent<CharacterArea>();
+        if (characterArea && characterArea != area && !attackedCharacters.Contains(characterArea.character))
+        {
+            attackedCharacters.Add(characterArea.character);
+        }
+
+        if (other.gameObject.layer == 8)
+        {
+            characterArea = other.transform.parent.GetComponent<CharacterArea>();
+            characterArea.character.Die();
+        }
+
+        
+    }
 
 }

@@ -1,0 +1,56 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class CharacterPowerUp : MonoBehaviour
+{
+    // Start is called before the first frame update
+
+    public bool SpeedUp;
+    Character character;
+    private void Awake()
+    {
+        character = transform.GetComponent<Character>();
+    }
+    private void Update()
+    {
+        
+     if (SpeedUp && character.player)
+		{
+			StartCoroutine(speedIncreaseFor5Sec());
+            SpeedUp = false;
+		}
+	}
+	IEnumerator speedIncreaseFor5Sec()
+   {
+        character.speed = 3f;
+    yield return new WaitForSeconds(5f);
+        character.speed = 1f;
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+       
+        if (other.CompareTag("DestroyAIPowerUp"))
+        {
+            CharacterArea[] allCharacterAreas = FindObjectsOfType<CharacterArea>();
+           
+            // Iterate through each found GameObject
+            foreach (CharacterArea characterAreas in allCharacterAreas)
+            {
+                // Skip the current GameObject (the one this script is attached to)
+                if (characterAreas.gameObject != this.gameObject && !characterAreas.character.player)
+                {
+                    characterAreas.character.Die();
+                    
+                }
+            }
+           
+            Destroy(other.gameObject);
+        }
+        if (other.CompareTag("CharacterSpeedUp"))
+        {
+            SpeedUp = true;
+            Destroy(other.gameObject);
+        }
+    }
+}
