@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class EnemySpawnerAI : MonoBehaviour
@@ -36,38 +37,7 @@ public class EnemySpawnerAI : MonoBehaviour
         
         if (isReadyToSpawn)
         {
-            randomNumber=Random.Range(0,Enemies.Length);
-
-            // Instantiate the object at the spawn location's position and rotation
-            if (!spawnFromPoint1)
-            {
-
-               E1= Instantiate(Enemies[randomNumber], SpawnPoint[0].position, SpawnPoint[0].rotation);
-               
-                spawnFromPoint1 =true;
-            }
-            else if (!spawnFromPoint2)
-            {
-
-               E2= Instantiate(Enemies[randomNumber], SpawnPoint[1].position, SpawnPoint[1].rotation);
-              
-                spawnFromPoint2 = true;
-            }
-            else if (!spawnFromPoint3)
-            {
-
-               E3= Instantiate(Enemies[randomNumber], SpawnPoint[2].position, SpawnPoint[2].rotation);
-                
-                spawnFromPoint3 = true;
-            }
-            else if (!spawnFromPoint4)
-            {
-
-              E4=  Instantiate(Enemies[randomNumber], SpawnPoint[3].position, SpawnPoint[3].rotation);
-             
-                spawnFromPoint4 = true;
-            }
-            totalEnemiesPresent++;
+            StartCoroutine(SpawnDelay());
         }
         if(E1==null)
         {
@@ -77,6 +47,42 @@ public class EnemySpawnerAI : MonoBehaviour
         if(E3==null) {  spawnFromPoint3=false; } 
         if (E4==null) {  spawnFromPoint4=false; }
         
+    }
+    IEnumerator SpawnDelay()
+    {
+        yield return new WaitForSeconds(3f);
+        randomNumber = Random.Range(0, Enemies.Length);
+
+        // Instantiate the object at the spawn location's position and rotation
+        if (!spawnFromPoint1)
+        {
+
+            E1 = Instantiate(Enemies[randomNumber], SpawnPoint[0].position, SpawnPoint[0].rotation);
+
+            spawnFromPoint1 = true;
+        }
+        else if (!spawnFromPoint2)
+        {
+
+            E2 = Instantiate(Enemies[randomNumber], SpawnPoint[1].position, SpawnPoint[1].rotation);
+
+            spawnFromPoint2 = true;
+        }
+        else if (!spawnFromPoint3)
+        {
+
+            E3 = Instantiate(Enemies[randomNumber], SpawnPoint[2].position, SpawnPoint[2].rotation);
+
+            spawnFromPoint3 = true;
+        }
+        else if (!spawnFromPoint4)
+        {
+
+            E4 = Instantiate(Enemies[randomNumber], SpawnPoint[3].position, SpawnPoint[3].rotation);
+
+            spawnFromPoint4 = true;
+        }
+        totalEnemiesPresent++;
     }
     
 }

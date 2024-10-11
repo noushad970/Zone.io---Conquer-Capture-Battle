@@ -6,10 +6,13 @@ public class CharacterPowerUp : MonoBehaviour
 {
     // Start is called before the first frame update
 
-    public bool SpeedUp;
+    bool SpeedUp;
+    int speedUpTime;
     Character character;
+    public GameObject destroyAllParticle,speedUpParticle;
     private void Awake()
     {
+        speedUpTime = 5;
         character = transform.GetComponent<Character>();
     }
     private void Update()
@@ -24,7 +27,7 @@ public class CharacterPowerUp : MonoBehaviour
 	IEnumerator speedIncreaseFor5Sec()
    {
         character.speed = 3f;
-    yield return new WaitForSeconds(5f);
+    yield return new WaitForSeconds(speedUpTime);
         character.speed = 1f;
     }
     private void OnTriggerEnter(Collider other)
@@ -33,7 +36,7 @@ public class CharacterPowerUp : MonoBehaviour
         if (other.CompareTag("DestroyAIPowerUp"))
         {
             CharacterArea[] allCharacterAreas = FindObjectsOfType<CharacterArea>();
-           
+            StartCoroutine(playDestroyEnemiesParticle());
             // Iterate through each found GameObject
             foreach (CharacterArea characterAreas in allCharacterAreas)
             {
@@ -50,7 +53,20 @@ public class CharacterPowerUp : MonoBehaviour
         if (other.CompareTag("CharacterSpeedUp"))
         {
             SpeedUp = true;
+            StartCoroutine(playSpeedUpParticle());
             Destroy(other.gameObject);
         }
+    }
+    IEnumerator playDestroyEnemiesParticle()
+    {
+        destroyAllParticle.SetActive(true);
+        yield return new WaitForSeconds(2);
+        destroyAllParticle.SetActive(false);
+    }
+    IEnumerator playSpeedUpParticle()
+    {
+        speedUpParticle.SetActive(true);
+        yield return new WaitForSeconds(speedUpTime);
+        speedUpParticle.SetActive(false);
     }
 }

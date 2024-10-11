@@ -27,7 +27,7 @@ public class Character : MonoBehaviour
 
 	[Header("Movement")]
 	public float speed = 1f;
-	public float turnSpeed = 14f;
+	 float turnSpeed = 7f;
 	public TrailRenderer trail;
 	public GameObject trailCollidersHolder;
 	public List<SphereCollider> trailColls = new List<SphereCollider>();
@@ -35,10 +35,24 @@ public class Character : MonoBehaviour
 	protected Rigidbody rb;
 	protected Vector3 curDir;
 	protected Quaternion targetRot;
-     // This will store the last attacker
-
+	// This will store the last attacker
+	Animator anim;
+	GameObject explode;
 	private void Awake()
 	{
+		speed=1f;
+        Transform explodeTransform = transform.Find("Explode");
+		
+        if (explodeTransform!=null)
+		{
+            explode = explodeTransform.gameObject;
+          
+        }
+		else
+		{
+			Debug.Log("Not Found Explode");
+		}
+		anim = GetComponent<Animator>();
 		rb = GetComponent<Rigidbody>();
 		trail = transform.Find("Trail").GetComponent<TrailRenderer>();
 		trail.material.color = new Color(color.r, color.g, color.b, 0.65f);
@@ -46,7 +60,7 @@ public class Character : MonoBehaviour
 	}
 
 	public virtual void Start()
-	{
+	{ 
 		InitializeCharacter();
 	}
 
@@ -233,18 +247,40 @@ public class Character : MonoBehaviour
 	
     public void Die()
 	{
-		if (player )
+		StartCoroutine(playingDieAnim());
+	}
+	IEnumerator playingDieAnim()
+	{
+		anim.Play("Die");
+		speed = 0f;
+		if (!player)
 		{
-			GameManager.gm.GameOver();
-		}
-		else
-		{
-			EnemySpawnerAI.totalEnemiesPresent -= 1;
-
+            StartCoroutine(playExplodeParticle());
+        }
+        yield return new WaitForSeconds(1f);
+        if (player)
+        {
+            GameManager.gm.GameOver();
+        }
+        else
+        {
+            EnemySpawnerAI.totalEnemiesPresent -= 1;
+            Destroy(gameObject);
             Destroy(area.gameObject);
-			Destroy(areaOutline);
-			Destroy(gameObject);
-		}
+            Destroy(areaOutline);
+			
+			
+           
+        }
+		speed = 1f;
+    }
+	IEnumerator playExplodeParticle()
+	{
+        if (explode != null)
+            explode.SetActive(true);
+		yield return new WaitForSeconds(1f);
+        if (explode != null)
+            explode.SetActive(false);
 	}
     private void OnTriggerEnter(Collider other)
     {
