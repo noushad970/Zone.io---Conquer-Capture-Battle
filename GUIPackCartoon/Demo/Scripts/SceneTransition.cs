@@ -10,7 +10,7 @@ namespace Ricimi
     // this work is performed in the Transition class, though).
     public class SceneTransition : MonoBehaviour
     {
-        public string scene = "<Insert scene name>";
+        public string scene = "Gameplay";
         public float duration = 1.0f;
         public Color color = Color.black;
 

@@ -12,6 +12,9 @@ public class CloudSaveManager : MonoBehaviour
     // 1= yes,true, 0=no,false
     // Key for storing coins in Cloud Save
     private const string COIN_KEY = "player_coins";
+    private const string Difficulti_Level_KEY = "player_dificulty";
+    private const string Score_KEY = "player_Score";
+    private const string Unlock_Player_KEY = "player_Unlock";
     public Button updateCoinButton;
     public Text playerName;
     // This function initializes Unity Gaming Services and authenticates the player
@@ -123,16 +126,7 @@ public class CloudSaveManager : MonoBehaviour
     private const string NICKNAME_KEY = "player_nickname";
     public GameObject nicknameSetPanel;
     string nickname;
-    /*private async void Start()
-    {
-        await UnityServices.InitializeAsync();
-        submitNickNameButton.onClick.AddListener(setNickName);
-        if (await GetSavednicknameVal() == 0)
-        {
-            nicknameSetPanel.SetActive(true);
-        }
-        else { nicknameSetPanel.SetActive(false); }
-    }**/
+ 
     async void setNickName()
     {
         nickname = nickName.text;
@@ -207,6 +201,63 @@ public class CloudSaveManager : MonoBehaviour
         await SaveNickname(updatedval);
 
         Debug.Log($"nickname updated. New total: {updatedval}");
+    }
+
+    // Save player's Score to Unity Cloud Save
+    public async Task SaveDifficultyLevel(int DS)
+    {
+        try
+        {
+            var data = new Dictionary<string, object>
+            {
+                { Difficulti_Level_KEY, DS }
+            };
+
+            await CloudSaveService.Instance.Data.ForceSaveAsync(data);
+            Debug.Log($"Coins saved successfully: {DS}");
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"Error saving coins: {e}");
+        }
+    }
+
+    // Fetch player's saved coins from Unity Cloud Save
+    public async Task<int> GetSavedDifficulty()
+    {
+        try
+        {
+            var savedData = await CloudSaveService.Instance.Data.LoadAsync(new HashSet<string> { Difficulti_Level_KEY });
+
+            if (savedData.ContainsKey(Difficulti_Level_KEY))
+            {
+                int DF = Convert.ToInt32(savedData[Difficulti_Level_KEY]);
+                Debug.Log($"Coins loaded from cloud: {DF}");
+                return DF;
+            }
+            else
+            {
+                Debug.Log("No saved coins found.");
+                return 0;  // Default if no coins are saved
+            }
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"Error loading coins: {e}");
+            return 0;  // Default if there's an error
+        }
+    }
+    public async Task UpdateDifficultyLevel(int levelUpdate)
+    {
+        // Fetch the current saved coins
+        int currentDifficultyLevel = await GetSavedCoins();
+        int updatedDifficultyLevel = levelUpdate;
+        UpdateLeaderBoard = true;
+        
+        // Save the updated coin value back to Cloud Save
+        await SaveDifficultyLevel(updatedDifficultyLevel);
+
+        Debug.Log($"Coins updated. New total: {updatedDifficultyLevel}");
     }
 
 }

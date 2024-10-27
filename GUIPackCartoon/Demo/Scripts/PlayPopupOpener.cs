@@ -21,7 +21,7 @@ namespace Ricimi
             popup.transform.SetParent(m_canvas.transform, false);
 
             var playPopup = popup.GetComponent<PlayPopup>();
-            playPopup.Open();
+            
             playPopup.SetAchievedStars(starsObtained);
         }
     }

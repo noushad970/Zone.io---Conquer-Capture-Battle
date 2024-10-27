@@ -25,7 +25,7 @@ namespace Ricimi
             popup.SetActive(true);
             popup.transform.localScale = Vector3.zero;
             popup.transform.SetParent(m_canvas.transform, false);
-            popup.GetComponent<Popup>().Open();
+           
         }
     }
 }
