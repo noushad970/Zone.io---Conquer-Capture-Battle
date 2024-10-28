@@ -7,9 +7,16 @@ public class DownBarButtonManagement : MonoBehaviour
 {
     public Button ItemStoreButton, CharStoreButton, PlayMenuButton, PowerUpMenuButton, ExitGameButton;
     public GameObject ItemStore, CharStore, PlayMenu, PowerUpMenu, ExitGame;
-
+    public Button yesExitButton, NoExitButton;
+    public Button GemAmountButton, CoinAmountButton;
+    public GameObject characterPlaceObject;
+    private void Update()
+    {
+        Debug.Log("Total Coin: "+CloudSaveManager.instance.totalCoin);
+    }
     private void Start()
     {
+
         ItemStore.SetActive(false);
         CharStore.SetActive(false);
         PlayMenu.SetActive(true);
@@ -17,10 +24,15 @@ public class DownBarButtonManagement : MonoBehaviour
         PowerUpMenu.SetActive(false);
         ExitGame.SetActive(false);
         ItemStoreButton.onClick.AddListener(OnclickItem);
+        GemAmountButton.onClick.AddListener(OnclickItem);
+        CoinAmountButton.onClick.AddListener(OnclickItem);
         CharStoreButton.onClick.AddListener(OnclickChar);
         PlayMenuButton.onClick.AddListener(OnclickPlay);
         PowerUpMenuButton.onClick.AddListener(OnclickPower);
         ExitGameButton.onClick.AddListener(OnclickExit);
+        yesExitButton.onClick.AddListener(exitGame);
+        NoExitButton.onClick.AddListener(DisableExitConfirmationPanel);
+        characterPlaceObject.SetActive(true);
     }
     void OnclickItem()
     {
@@ -36,6 +48,7 @@ public class DownBarButtonManagement : MonoBehaviour
         if (PowerUpMenu != null)
             PowerUpMenu.SetActive(false);
         ExitGame.SetActive(false);
+        characterPlaceObject.SetActive(false);
     }
     void OnclickChar()
     {
@@ -50,6 +63,7 @@ public class DownBarButtonManagement : MonoBehaviour
         if (PowerUpMenu != null)
             PowerUpMenu.SetActive(false);
         ExitGame.SetActive(false);
+        characterPlaceObject.SetActive(true);
     }
     void OnclickPlay()
     {
@@ -64,6 +78,7 @@ public class DownBarButtonManagement : MonoBehaviour
         if (PowerUpMenu != null)
             PowerUpMenu.SetActive(false);
         ExitGame.SetActive(false);
+        characterPlaceObject.SetActive(true);
     }
     void OnclickPower()
     {
@@ -78,6 +93,7 @@ public class DownBarButtonManagement : MonoBehaviour
         if (PowerUpMenu != null)
             PowerUpMenu.SetActive(true);
         ExitGame.SetActive(false);
+        characterPlaceObject.SetActive(false);
     }
     void OnclickExit()
     {
@@ -92,5 +108,23 @@ public class DownBarButtonManagement : MonoBehaviour
         if (PowerUpMenu != null)
             PowerUpMenu.SetActive(false);
         ExitGame.SetActive(true);
+        characterPlaceObject.SetActive(false);
+    }
+    void exitGame()
+    {
+        #if UNITY_EDITOR
+        // This will stop the play mode in the editor
+        UnityEditor.EditorApplication.isPlaying = false;
+        
+#else
+        // This will quit the application in a build
+        Application.Quit();
+        
+#endif
+    }
+    void DisableExitConfirmationPanel()
+    {
+        ExitGame.SetActive(false);
+        OnclickPlay();
     }
 }
