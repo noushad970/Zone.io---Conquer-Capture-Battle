@@ -12,7 +12,12 @@ public class DownBarButtonManagement : MonoBehaviour
     public GameObject characterPlaceObject;
     private void Update()
     {
-        Debug.Log("Total Coin: "+CloudSaveManager.instance.totalCoin);
+        Debug.Log("Total Coin: " + CloudSaveManager.instance.totalCoin);
+        if (OpenBoxAndGetGift.isClosedMysteryBox)
+        {
+            OpenBoxAndGetGift.isClosedMysteryBox = false;
+            OnclickPlay(); 
+        }
     }
     private void Start()
     {
@@ -34,6 +39,7 @@ public class DownBarButtonManagement : MonoBehaviour
         NoExitButton.onClick.AddListener(DisableExitConfirmationPanel);
         characterPlaceObject.SetActive(true);
     }
+    
     void OnclickItem()
     {
         ItemStoreButton.enabled = false;

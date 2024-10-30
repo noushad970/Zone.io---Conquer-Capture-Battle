@@ -10,12 +10,12 @@ public class PlayMenuUIManagement : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        SettingButton.onClick.AddListener(OnclickSetting);
     }
 
     // Update is called once per frame
     void OnclickSetting()
     {
-
+        setting.SetActive(true);
     }
 }

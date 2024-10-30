@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class BuyCharacterSkin : MonoBehaviour
 {
     public Button buyCommonSkinButton,buyEpicSkinButton;
-    public GameObject[] lockedCommon,lockedEpic;
+    public GameObject[] lockedCommon,lockedEpic,lockedSpecial;
     // Start is called before the first frame update
     void Start()
     {
@@ -18,6 +18,7 @@ public class BuyCharacterSkin : MonoBehaviour
     {
         disableLockLogofromCommonChar();
         disableLockLgoFromEpicChar();
+        disableLockLgoFromSpecialChar();
     }
     //l0=free,l1=100,l2=300,l3=500,l4=800,l5=1100,l6=1500,l7=2000,l8=2500
     void OnClickCommonSkinButton()
@@ -282,6 +283,17 @@ public class BuyCharacterSkin : MonoBehaviour
         for(int i= CloudSaveManager.instance.epicCharVal + 1;i<lockedEpic.Length; i++)
         {
             lockedEpic[i].SetActive(true);
+        }
+    }
+    void disableLockLgoFromSpecialChar()
+    {
+        for (int i = 0; i <= CloudSaveManager.instance.specialCarVal; i++)
+        {
+            lockedSpecial[i].SetActive(false);
+        }
+        for (int i = CloudSaveManager.instance.specialCarVal; i < lockedSpecial.Length; i++)
+        {
+            lockedSpecial[i].SetActive(true);
         }
     }
 }

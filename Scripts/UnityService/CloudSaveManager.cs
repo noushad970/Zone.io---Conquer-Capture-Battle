@@ -31,10 +31,11 @@ public class CloudSaveManager : MonoBehaviour
     {
         await InitializeUnityServices();
         string st=await AuthenticationService.Instance.GetPlayerNameAsync();
-        await UpdateCoins(10);
-        await UpdateGems(100);
+        await GetSavedCoins();
         await GetSavedCharCommon();
         await GetSavedCharEpic();
+        await GetSavedCharSpecial();
+        await GetSavedGems();
         /*
          * nicknames
          * submitNickNameButton.onClick.AddListener(setNickName);
@@ -77,6 +78,11 @@ public class CloudSaveManager : MonoBehaviour
         {
             StaticData.SaveEpicCharData = false;
             await UpdateCharEpic();
+        }
+        if (StaticData.SaveSpecialCharData)
+        {
+            StaticData.SaveSpecialCharData = false;
+            await UpdateCharSpecial();
         }
     }
 
@@ -222,7 +228,7 @@ public class CloudSaveManager : MonoBehaviour
         await SaveCharCommon(updatedCharCommon);
 
     }
-
+    
     // Save player's Epic character unlocked value to Unity Cloud Save
     public async Task SaveCharEpic(int EpicChar)
     {
@@ -280,6 +286,67 @@ public class CloudSaveManager : MonoBehaviour
         await SaveCharEpic(updatedCharEpic);
 
     }
+    
+
+    //save special character data to cloud
+    public async Task SaveCharSpecial(int SpecialChar)
+    {
+        try
+        {
+            var data = new Dictionary<string, object>
+            {
+                { SPECIAL_CHAR_KEY, SpecialChar }
+            };
+
+            await CloudSaveService.Instance.Data.ForceSaveAsync(data);
+            Debug.Log($"Common Character value saved successfully: {SpecialChar}");
+            await GetSavedCharSpecial();
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"Error saving : {e}");
+        }
+    }
+
+    // Fetch player's saved coins from Unity Cloud Save
+    public async Task<int> GetSavedCharSpecial()
+    {
+        try
+        {
+            var savedData = await CloudSaveService.Instance.Data.LoadAsync(new HashSet<string> { SPECIAL_CHAR_KEY });
+
+            if (savedData.ContainsKey(SPECIAL_CHAR_KEY))
+            {
+                int CharSpecial = Convert.ToInt32(savedData[SPECIAL_CHAR_KEY]);
+                specialCarVal = CharSpecial;
+                Debug.Log($"CharEpic loaded from cloud: {CharSpecial}");
+
+                return CharSpecial;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+        catch (Exception e)
+        {
+            return 0;
+        }
+    }
+
+    // Update player's coins (this will overwrite the previous value in Cloud Save)
+    public async Task UpdateCharSpecial()
+    {
+        // Fetch the current saved coins
+        int currentCharSpecial = await GetSavedCharSpecial();
+        int updatedCharSpecial = currentCharSpecial + 1;
+
+
+        await SaveCharSpecial(updatedCharSpecial);
+
+    }
+
+
     // Save player's gem to Unity Cloud Save
     public async Task SaveGems(int gems)
     {

@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class MysteryboxManagement : MonoBehaviour
 {
-     float targetAngle = -120f; // The angle we want to reach
-     float rotationSpeed = 90f; // Speed of rotation
+     public float targetAngle = -90; // The angle we want to reach
+     public float rotationSpeed = 45; // Speed of rotation
 
     private float currentAngle = 0f;
     bool x=false;
@@ -18,7 +18,9 @@ public class MysteryboxManagement : MonoBehaviour
     {
         yield return new WaitForSeconds(2f);
         MoveTo90Degree();
-       
+        yield return new WaitForSeconds(2.1f);
+        transform.rotation = Quaternion.Euler(0, -180, 0);
+
     }
     void MoveTo90Degree()
     {
