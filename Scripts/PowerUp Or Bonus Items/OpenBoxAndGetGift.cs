@@ -16,9 +16,11 @@ public class OpenBoxAndGetGift : MonoBehaviour
     public GameObject[] mainGamePanels;
     public static bool isClosedMysteryBox;
     public Button openMysteryBoxButton;
+    public GameObject charBar;
     // Start is called before the first frame update
     void Start()
     {
+        charBarForBoxOpen.SetActive(false);
         isClosedMysteryBox = false;
         isOpeningCreate = false;
         setActiveCharfalse();
@@ -26,7 +28,6 @@ public class OpenBoxAndGetGift : MonoBehaviour
     }
     private void Update()
     {
-        charBarForBoxOpen.SetActive(false);
         if (isOpeningCreate)
         {
             giftBox.SetActive(true);
@@ -46,6 +47,7 @@ public class OpenBoxAndGetGift : MonoBehaviour
     IEnumerator openCreate()
     {
         charBarForBoxOpen.SetActive(true);
+
         charBarForMenuCharacter.SetActive(false);
         for(int i=0; i < mainGamePanels.Length; i++)
         {
@@ -159,6 +161,8 @@ public class OpenBoxAndGetGift : MonoBehaviour
         setActiveCharfalse();
         isClosedMysteryBox = true;
         charBarForBoxOpen.SetActive(false);
+        charBarForMenuCharacter.SetActive(true);
+
 
     }
     void setActiveCharfalse()

@@ -57,10 +57,11 @@ public class CharacterPowerUp : MonoBehaviour
             Destroy(other.gameObject);
         }
     }
+    public static float SpeedUpDuration;
     IEnumerator playDestroyEnemiesParticle()
     {
         destroyAllParticle.SetActive(true);
-        yield return new WaitForSeconds(2);
+        yield return new WaitForSeconds(SpeedUpDuration);
         destroyAllParticle.SetActive(false);
     }
     IEnumerator playSpeedUpParticle()

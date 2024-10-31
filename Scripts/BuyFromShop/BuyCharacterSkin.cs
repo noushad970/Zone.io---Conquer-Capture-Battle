@@ -1,17 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class BuyCharacterSkin : MonoBehaviour
 {
-    public Button buyCommonSkinButton,buyEpicSkinButton;
+    public Button buyCommonSkinButton,buyEpicSkinButton,okButton;
     public GameObject[] lockedCommon,lockedEpic,lockedSpecial;
+    public TMP_Text commonCharBuyAmount, EpicCharBuyAmount;
+    public GameObject notEnoughCoinPanel;
+
     // Start is called before the first frame update
     void Start()
     {
         buyCommonSkinButton.onClick.AddListener(OnClickCommonSkinButton);
         buyEpicSkinButton.onClick.AddListener (OnClickEpicSkinButton);
+        okButton.onClick.AddListener(onClickOKButton);
     }
 
     private void Update()
@@ -19,6 +24,78 @@ public class BuyCharacterSkin : MonoBehaviour
         disableLockLogofromCommonChar();
         disableLockLgoFromEpicChar();
         disableLockLgoFromSpecialChar();
+        showBuyAmount();
+        if (CloudSaveManager.instance.commonCharVal == 9)
+        {
+            buyCommonSkinButton.gameObject.SetActive(false);
+        }
+        if (CloudSaveManager.instance.epicCharVal == 7)
+        {
+            buyEpicSkinButton.gameObject.SetActive(false);
+        }
+    }
+    void showBuyAmount()
+    {
+        if (CloudSaveManager.instance.commonCharVal == 0)
+        {
+            commonCharBuyAmount.text = "100";
+        }
+        else if (CloudSaveManager.instance.commonCharVal == 1)
+        {
+            commonCharBuyAmount.text = "300";
+        }
+        else if (CloudSaveManager.instance.commonCharVal == 2)
+        {
+            commonCharBuyAmount.text = "500";
+        }
+        else if (CloudSaveManager.instance.commonCharVal == 3)
+        {
+            commonCharBuyAmount.text = "800";
+        }
+        else if (CloudSaveManager.instance.commonCharVal == 4)
+        {
+            commonCharBuyAmount.text = "1100";
+        }
+        else if (CloudSaveManager.instance.commonCharVal == 5)
+        {
+            commonCharBuyAmount.text = "1500";
+        }
+        else if (CloudSaveManager.instance.commonCharVal == 6)
+        {
+            commonCharBuyAmount.text = "2000";
+        }
+        else if (CloudSaveManager.instance.commonCharVal == 7)
+        {
+            commonCharBuyAmount.text = "2500";
+        }
+        if (CloudSaveManager.instance.epicCharVal == 1)
+        {
+            EpicCharBuyAmount.text = "19";
+        }
+        else if (CloudSaveManager.instance.epicCharVal == 2)
+        {
+            EpicCharBuyAmount.text = "49";
+        }
+        else if (CloudSaveManager.instance.epicCharVal == 3)
+        {
+            EpicCharBuyAmount.text = "89";
+        }
+        else if (CloudSaveManager.instance.epicCharVal == 4)
+        {
+            EpicCharBuyAmount.text = "120";
+        }
+        else if (CloudSaveManager.instance.epicCharVal == 5)
+        {
+            EpicCharBuyAmount.text = "159";
+        }
+        else if (CloudSaveManager.instance.epicCharVal == 6)
+        {
+            EpicCharBuyAmount.text = "200";
+        }
+        else if (CloudSaveManager.instance.epicCharVal == 0)
+        {
+            EpicCharBuyAmount.text = "9";
+        }
     }
     //l0=free,l1=100,l2=300,l3=500,l4=800,l5=1100,l6=1500,l7=2000,l8=2500
     void OnClickCommonSkinButton()
@@ -35,8 +112,7 @@ public class BuyCharacterSkin : MonoBehaviour
             else
             {
                 //not enough coin
-                Debug.Log("Not Enough money for buy common characters");
-            }
+                notEnoughCoinPanel.SetActive(true);}
         }
         else if (CloudSaveManager.instance.commonCharVal == 1)
         {
@@ -50,7 +126,7 @@ public class BuyCharacterSkin : MonoBehaviour
             else
             {
                 //not enough coin
-                Debug.Log("Not Enough money for buy common characters");
+                notEnoughCoinPanel.SetActive(true);
             }
         }
         else if (CloudSaveManager.instance.commonCharVal == 2)
@@ -65,7 +141,7 @@ public class BuyCharacterSkin : MonoBehaviour
             else
             {
                 //not enough coin
-                Debug.Log("Not Enough money for buy common characters");
+                notEnoughCoinPanel.SetActive(true);
             }
         }
         else if (CloudSaveManager.instance.commonCharVal == 3)
@@ -80,7 +156,7 @@ public class BuyCharacterSkin : MonoBehaviour
             else
             {
                 //not enough coin
-                Debug.Log("Not Enough money for buy common characters");
+                notEnoughCoinPanel.SetActive(true);
             }
         }
         else if (CloudSaveManager.instance.commonCharVal == 4)
@@ -95,7 +171,7 @@ public class BuyCharacterSkin : MonoBehaviour
             else
             {
                 //not enough coin
-                Debug.Log("Not Enough money for buy common characters");
+                notEnoughCoinPanel.SetActive(true);
             }
         }
         else if (CloudSaveManager.instance.commonCharVal == 5)
@@ -103,14 +179,14 @@ public class BuyCharacterSkin : MonoBehaviour
             if (CloudSaveManager.instance.totalCoin >= 1500)
             {
                 //buy
-                StaticData.coinData = -300;
+                StaticData.coinData = -1500;
                 StaticData.SaveCoinData = true;
                 StaticData.SaveCommonCharData = true;
             }
             else
             {
                 //not enough coin
-                Debug.Log("Not Enough money for buy common characters");
+                notEnoughCoinPanel.SetActive(true);
             }
         }
         else if (CloudSaveManager.instance.commonCharVal == 6)
@@ -118,14 +194,14 @@ public class BuyCharacterSkin : MonoBehaviour
             if (CloudSaveManager.instance.totalCoin >= 2000)
             {
                 //buy
-                StaticData.coinData = -300;
+                StaticData.coinData = -2000;
                 StaticData.SaveCoinData = true;
                 StaticData.SaveCommonCharData = true;
             }
             else
             {
                 //not enough coin
-                Debug.Log("Not Enough money for buy common characters");
+                notEnoughCoinPanel.SetActive(true);
             }
         }
         else if (CloudSaveManager.instance.commonCharVal == 7)
@@ -133,14 +209,14 @@ public class BuyCharacterSkin : MonoBehaviour
             if (CloudSaveManager.instance.totalCoin >= 2500)
             {
                 //buy
-                StaticData.coinData = -300;
+                StaticData.coinData = -2500;
                 StaticData.SaveCoinData = true;
                 StaticData.SaveCommonCharData = true;
             }
             else
             {
                 //not enough coin
-                Debug.Log("Not Enough money for buy common characters");
+                notEnoughCoinPanel.SetActive(true);
             }
         }
         else if (CloudSaveManager.instance.commonCharVal == 8)
@@ -165,7 +241,7 @@ public class BuyCharacterSkin : MonoBehaviour
             else
             {
                 //not enough coin
-                Debug.Log("Not Enough epic for buy epic characters");
+                notEnoughCoinPanel.SetActive(true);
             }
         }
         else if (CloudSaveManager.instance.epicCharVal == 1)
@@ -180,7 +256,7 @@ public class BuyCharacterSkin : MonoBehaviour
             else
             {
                 //not enough coin
-                Debug.Log("Not Enough gem for buy epic characters");
+                notEnoughCoinPanel.SetActive(true);
             }
         }
         else if (CloudSaveManager.instance.epicCharVal == 2)
@@ -195,7 +271,7 @@ public class BuyCharacterSkin : MonoBehaviour
             else
             {
                 //not enough coin
-                Debug.Log("Not Enough gem for buy epic characters");
+                notEnoughCoinPanel.SetActive(true);
             }
         }
         else if (CloudSaveManager.instance.epicCharVal == 3)
@@ -210,7 +286,7 @@ public class BuyCharacterSkin : MonoBehaviour
             else
             {
                 //not enough coin
-                Debug.Log("Not Enough gem for buy epic characters");
+                notEnoughCoinPanel.SetActive(true);
             }
         }
         else if (CloudSaveManager.instance.epicCharVal == 4)
@@ -225,7 +301,7 @@ public class BuyCharacterSkin : MonoBehaviour
             else
             {
                 //not enough coin
-                Debug.Log("Not Enough gem for buy epic characters");
+                notEnoughCoinPanel.SetActive(true);
             }
         }
         else if (CloudSaveManager.instance.epicCharVal == 5)
@@ -240,7 +316,7 @@ public class BuyCharacterSkin : MonoBehaviour
             else
             {
                 //not enough coin
-                Debug.Log("Not Enough gem for buy epic characters");
+                notEnoughCoinPanel.SetActive(true);
             }
         }
         else if (CloudSaveManager.instance.epicCharVal == 6)
@@ -255,14 +331,22 @@ public class BuyCharacterSkin : MonoBehaviour
             else
             {
                 //not enough coin
-                Debug.Log("Not Enough gem for buy epic characters");
+                notEnoughCoinPanel.SetActive(true);
             }
+        }
+        else if (CloudSaveManager.instance.epicCharVal == 7)
+        {
+            buyEpicSkinButton.gameObject.SetActive(false);
+            Debug.Log("ALL Epic Player is Buyed");
         }
 
 
 
     }
-
+    void onClickOKButton()
+    {
+        notEnoughCoinPanel.SetActive(false);
+    }
     void disableLockLogofromCommonChar()
     {
         for(int i=0;i<= CloudSaveManager.instance.commonCharVal; i++)

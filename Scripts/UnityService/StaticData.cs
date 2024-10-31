@@ -1,8 +1,6 @@
 using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 
-public class StaticData : MonoBehaviour
+public class StaticData 
 {
     //all the data from here will pass to the save methods for each element and also save game data to cloud system
     public static int coinData;
@@ -12,6 +10,8 @@ public class StaticData : MonoBehaviour
     public static int epicCharData;
     public static int specialCharData;
     public static int DifficultyLevelData;
+    public static int CharacterValue;
+
     //all boolean value for save the data to server
     public static bool SaveCoinData;
     public static bool SaveGemData;
@@ -19,7 +19,10 @@ public class StaticData : MonoBehaviour
     public static bool SaveRearCharData;
     public static bool SaveEpicCharData;
     public static bool SaveSpecialCharData;
-
+    public static bool SaveCharacterValue;
+    public static bool SaveDifficultyLevelData;
+    public static bool SaveSpeedupDurationUpdate;
+    public static bool SavePoisonDurationUpdate;
 
 
 

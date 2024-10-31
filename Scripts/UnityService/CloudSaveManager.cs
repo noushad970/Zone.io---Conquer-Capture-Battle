@@ -18,24 +18,45 @@ public class CloudSaveManager : MonoBehaviour
     private const string REAR_CHAR_KEY = "rear_character_value";
     private const string EPIC_CHAR_KEY = "epic_character_value";
     private const string SPECIAL_CHAR_KEY = "special_character_value";
+    private const string SELECT_CHAR_VALUE = "select_character_value";
+    private const string SPEED_POWER_UP_VALUE = "select_character_speed_up_value";
+    private const string SPEED_POISON_VALUE = "select_character_poison_value";
 
     private const string Difficulti_Level_KEY = "player_dificulty";
-    private const string Score_KEY = "player_Score";
-    private const string Unlock_Player_KEY = "player_Unlock";
+    
     public Button updateCoinButton;
     public Text playerName;
+    private const string FirstPushKeys = "FirstCloudPushs";
     [HideInInspector]
-    public int totalCoin = 0, totalGem = 0,commonCharVal,rearCharVal,epicCharVal,specialCarVal;
+    public int totalCoin = 0, totalGem = 0,commonCharVal,rearCharVal,epicCharVal,specialCarVal,selectedCharValue,difficultyLevel, SpeedUpDurationValue, PoisonDurationValue;
     // This function initializes Unity Gaming Services and authenticates the player
     private async void Start()
     {
+
         await InitializeUnityServices();
-        string st=await AuthenticationService.Instance.GetPlayerNameAsync();
+        string st = await AuthenticationService.Instance.GetPlayerNameAsync();
+        if (!PlayerPrefs.HasKey(FirstPushKeys))
+        {
+            // This block will only run once when the game is played for the first time
+            await SaveCoins(0);
+            await SaveGems(0);
+            await SaveCharValue(100);
+            await SaveDifficultyLevel(1);
+            await SaveSpeedPowerUpValue(0);
+            await SavePoisonPowerUpValue(0);
+            // Set a local flag indicating the push has occurred
+            PlayerPrefs.SetInt(FirstPushKeys, 1);
+            PlayerPrefs.Save();
+        }
         await GetSavedCoins();
         await GetSavedCharCommon();
         await GetSavedCharEpic();
         await GetSavedCharSpecial();
         await GetSavedGems();
+        await GetSavedCharValue();
+        await GetSavedDifficulty();
+        await GetSavedSpeedPowerUpValue();
+        await GetSavedPoisonPowerUpValue();
         /*
          * nicknames
          * submitNickNameButton.onClick.AddListener(setNickName);
@@ -83,6 +104,26 @@ public class CloudSaveManager : MonoBehaviour
         {
             StaticData.SaveSpecialCharData = false;
             await UpdateCharSpecial();
+        }
+        if (StaticData.SaveCharacterValue)
+        {
+            StaticData.SaveCharacterValue = false;
+            await UpdateCharacterValue(StaticData.CharacterValue);
+        }
+        if (StaticData.SaveDifficultyLevelData)
+        {
+            StaticData.SaveDifficultyLevelData = false;
+            await UpdateDifficultyLevel(StaticData.DifficultyLevelData);
+        }
+        if (StaticData.SaveSpeedupDurationUpdate)
+        {
+            StaticData.SaveSpeedupDurationUpdate=false;
+            await UpdateSpeedPowerUpValue();
+        }
+        if (StaticData.SavePoisonDurationUpdate)
+        {
+            StaticData.SavePoisonDurationUpdate=false;
+            await UpdatePoisonPowerUpValue();
         }
     }
 
@@ -286,42 +327,101 @@ public class CloudSaveManager : MonoBehaviour
         await SaveCharEpic(updatedCharEpic);
 
     }
-    
+      
 
-    //save special character data to cloud
-    public async Task SaveCharSpecial(int SpecialChar)
+        //save special character data to cloud
+        public async Task SaveCharSpecial(int SpecialChar)
+        {
+            try
+            {
+                var data = new Dictionary<string, object>
+                {
+                    { SPECIAL_CHAR_KEY, SpecialChar }
+                };
+
+                await CloudSaveService.Instance.Data.ForceSaveAsync(data);
+                Debug.Log($"Common Character value saved successfully: {SpecialChar}");
+                await GetSavedCharSpecial();
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"Error saving : {e}");
+            }
+        }
+
+        // Fetch player's saved coins from Unity Cloud Save
+        public async Task<int> GetSavedCharSpecial()
+        {
+            try
+            {
+                var savedData = await CloudSaveService.Instance.Data.LoadAsync(new HashSet<string> { SPECIAL_CHAR_KEY });
+
+                if (savedData.ContainsKey(SPECIAL_CHAR_KEY))
+                {
+                    int CharSpecial = Convert.ToInt32(savedData[SPECIAL_CHAR_KEY]);
+                    specialCarVal = CharSpecial;
+                    Debug.Log($"CharEpic loaded from cloud: {CharSpecial}");
+
+                    return CharSpecial;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+            catch (Exception e)
+            {
+                return 0;
+            }
+        }
+
+        // Update player's coins (this will overwrite the previous value in Cloud Save)
+        public async Task UpdateCharSpecial()
+        {
+            // Fetch the current saved coins
+            int currentCharSpecial = await GetSavedCharSpecial();
+            int updatedCharSpecial = currentCharSpecial + 1;
+
+
+            await SaveCharSpecial(updatedCharSpecial);
+
+        }
+
+    
+    //save character value to select character on game data to cloud
+    public async Task SaveCharValue(int CharValue)
     {
         try
         {
             var data = new Dictionary<string, object>
             {
-                { SPECIAL_CHAR_KEY, SpecialChar }
+                { SELECT_CHAR_VALUE, CharValue }
             };
 
             await CloudSaveService.Instance.Data.ForceSaveAsync(data);
-            Debug.Log($"Common Character value saved successfully: {SpecialChar}");
-            await GetSavedCharSpecial();
+            Debug.Log($"Common Character value saved successfully: {CharValue}");
+            await GetSavedCharValue();
         }
         catch (Exception e)
         {
             Debug.LogError($"Error saving : {e}");
         }
     }
-
-    // Fetch player's saved coins from Unity Cloud Save
-    public async Task<int> GetSavedCharSpecial()
+    public static bool readyToShowCharacterInMenu;
+    // Fetch player's saved character value from Unity Cloud Save
+    public async Task<int> GetSavedCharValue()
     {
         try
         {
-            var savedData = await CloudSaveService.Instance.Data.LoadAsync(new HashSet<string> { SPECIAL_CHAR_KEY });
+            var savedData = await CloudSaveService.Instance.Data.LoadAsync(new HashSet<string> { SELECT_CHAR_VALUE });
 
-            if (savedData.ContainsKey(SPECIAL_CHAR_KEY))
+            if (savedData.ContainsKey(SELECT_CHAR_VALUE))
             {
-                int CharSpecial = Convert.ToInt32(savedData[SPECIAL_CHAR_KEY]);
-                specialCarVal = CharSpecial;
-                Debug.Log($"CharEpic loaded from cloud: {CharSpecial}");
-
-                return CharSpecial;
+                int CharValue = Convert.ToInt32(savedData[SELECT_CHAR_VALUE]);
+                selectedCharValue = CharValue;
+                Debug.Log($"CharVal loaded from cloud: {CharValue}");
+                readyToShowCharacterInMenu= true;
+                return CharValue;
             }
             else
             {
@@ -333,20 +433,129 @@ public class CloudSaveManager : MonoBehaviour
             return 0;
         }
     }
-
-    // Update player's coins (this will overwrite the previous value in Cloud Save)
-    public async Task UpdateCharSpecial()
+    public async Task UpdateCharacterValue(int CharValue)
     {
         // Fetch the current saved coins
-        int currentCharSpecial = await GetSavedCharSpecial();
-        int updatedCharSpecial = currentCharSpecial + 1;
+        int currentCharValue = await GetSavedCharValue();
+        int updatedCharValue =  CharValue;
+        // UpdateLeaderBoard = true;
+      
+        // Save the updated coin value back to Cloud Save
+        await SaveCharValue(updatedCharValue);
 
+        Debug.Log($"Coins updated. New total: {updatedCharValue}");
+    }
+    
+    //save data for speed up powerup
+    public async Task SaveSpeedPowerUpValue(int speedUpVal)
+    {
+        try
+        {
+            var data = new Dictionary<string, object>
+            {
+                { SPEED_POWER_UP_VALUE, speedUpVal }
+            };
 
-        await SaveCharSpecial(updatedCharSpecial);
+            await CloudSaveService.Instance.Data.ForceSaveAsync(data);
+            Debug.Log($"speedUpVal value saved successfully: {speedUpVal}");
+            await GetSavedSpeedPowerUpValue();
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"Error saving : {e}");
+        }
+    }
+    // Fetch player's saved character value from Unity Cloud Save
+    public async Task<int> GetSavedSpeedPowerUpValue()
+    {
+        try
+        {
+            var savedData = await CloudSaveService.Instance.Data.LoadAsync(new HashSet<string> { SPEED_POWER_UP_VALUE });
+
+            if (savedData.ContainsKey(SPEED_POWER_UP_VALUE))
+            {
+                int speedUpVal = Convert.ToInt32(savedData[SPEED_POWER_UP_VALUE]);
+                SpeedUpDurationValue = speedUpVal;
+                Debug.Log($"speedUpVal loaded from cloud: {speedUpVal}");
+                return speedUpVal;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+        catch (Exception e)
+        {
+            return 0;
+        }
+    }
+    public async Task UpdateSpeedPowerUpValue()
+    {
+        // Fetch the current saved coins
+       int getSpeedUpVal= await GetSavedSpeedPowerUpValue();
+        int updatedSpeedUp = getSpeedUpVal+1;
+        // UpdateLeaderBoard = true;
+       
+        // Save the updated coin value back to Cloud Save
+        await SaveSpeedPowerUpValue(updatedSpeedUp);
+        Debug.Log($"Coins updated. New total: {updatedSpeedUp}");
+    }
+    
+
+    //save data for speed up powerup
+    public async Task SavePoisonPowerUpValue(int poisonVal)
+    {
+        try
+        {
+            var data = new Dictionary<string, object>
+            {
+                { SPEED_POISON_VALUE, poisonVal }
+            };
+
+            await CloudSaveService.Instance.Data.ForceSaveAsync(data);
+            Debug.Log($"speedUpVal value saved successfully: {poisonVal}");
+            await GetSavedPoisonPowerUpValue();
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"Error saving : {e}");
+        }
+    }
+    // Fetch player's saved character value from Unity Cloud Save
+    public async Task<int> GetSavedPoisonPowerUpValue()
+    {
+        try
+        {
+            var savedData = await CloudSaveService.Instance.Data.LoadAsync(new HashSet<string> { SPEED_POISON_VALUE });
+
+            if (savedData.ContainsKey(SPEED_POISON_VALUE))
+            {
+                int PoisonVal = Convert.ToInt32(savedData[SPEED_POISON_VALUE]);
+                PoisonDurationValue = PoisonVal;
+                Debug.Log($"speedUpVal loaded from cloud: {PoisonVal}");
+                return PoisonVal;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+        catch (Exception e)
+        {
+            return 0;
+        }
+    }
+    public async Task UpdatePoisonPowerUpValue()
+    {
+        // Fetch the current saved coins
+        int getPoisonVal = await GetSavedPoisonPowerUpValue();
+        int updatedPoisonVal = getPoisonVal + 1;
+        
+
+        // Save the updated coin value back to Cloud Save
+        await SavePoisonPowerUpValue(updatedPoisonVal);
 
     }
-
-
     // Save player's gem to Unity Cloud Save
     public async Task SaveGems(int gems)
     {
@@ -526,6 +735,7 @@ public class CloudSaveManager : MonoBehaviour
             if (savedData.ContainsKey(Difficulti_Level_KEY))
             {
                 int DF = Convert.ToInt32(savedData[Difficulti_Level_KEY]);
+                difficultyLevel = DF;
                 Debug.Log($"Coins loaded from cloud: {DF}");
                 return DF;
             }
@@ -541,17 +751,17 @@ public class CloudSaveManager : MonoBehaviour
             return 0;  // Default if there's an error
         }
     }
-    public async Task UpdateDifficultyLevel(int levelUpdate)
+    public async Task UpdateDifficultyLevel(int difLevel)
     {
         // Fetch the current saved coins
-        int currentDifficultyLevel = await GetSavedCoins();
-        int updatedDifficultyLevel = levelUpdate;
-        UpdateLeaderBoard = true;
-        
+        int currentLevel = await GetSavedGems();
+        int updatedLevel = difLevel;
+        // UpdateLeaderBoard = true;
+        difficultyLevel = difLevel;
         // Save the updated coin value back to Cloud Save
-        await SaveDifficultyLevel(updatedDifficultyLevel);
+        await SaveDifficultyLevel(updatedLevel);
 
-        Debug.Log($"Coins updated. New total: {updatedDifficultyLevel}");
+        Debug.Log($"Coins updated. New total: {updatedLevel}");
     }
 
 }
