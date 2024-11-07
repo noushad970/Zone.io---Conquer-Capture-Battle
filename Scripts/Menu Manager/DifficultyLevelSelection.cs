@@ -9,6 +9,7 @@ public class DifficultyLevelSelection : MonoBehaviour
     public GameObject easyTick, mediumTick, hardTick;
     private void Start()
     {
+        
         easyLevelButton.onClick.AddListener(onClickEasyMode);
         mediumLevelButton.onClick.AddListener(onClickMediumMode);
         hardLevelButton.onClick.AddListener(onClickHardMode);
@@ -36,16 +37,19 @@ public class DifficultyLevelSelection : MonoBehaviour
     }
     void onClickEasyMode()
     {
+        AudioManager.instance.playTabSound();
         StaticData.DifficultyLevelData = 1;
         StaticData.SaveDifficultyLevelData = true;
     }
     void onClickMediumMode()
     {
+        AudioManager.instance.playTabSound();
         StaticData.DifficultyLevelData = 2;
         StaticData.SaveDifficultyLevelData = true;
     }
     void onClickHardMode()
     {
+        AudioManager.instance.playTabSound();
         StaticData.DifficultyLevelData = 3;
         StaticData.SaveDifficultyLevelData = true;
     }

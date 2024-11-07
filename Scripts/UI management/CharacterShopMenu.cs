@@ -16,6 +16,7 @@ public class CharacterShopMenu : MonoBehaviour
     }
     void onclickCommon()
     {
+        AudioManager.instance.playSwapSound();
         commonBG.SetActive(true);
         EpicBg.SetActive(false);
         SpecialBG.SetActive(false);
@@ -27,6 +28,7 @@ public class CharacterShopMenu : MonoBehaviour
     }
     void onclickEpic()
     {
+        AudioManager.instance.playSwapSound();
         commonBG.SetActive(false);
         EpicBg.SetActive(true);
         SpecialBG.SetActive(false);
@@ -38,6 +40,7 @@ public class CharacterShopMenu : MonoBehaviour
     }
     void onclickRear()
     {
+        AudioManager.instance.playSwapSound();
         commonBG.SetActive(false);
         EpicBg.SetActive(false);
         SpecialBG.SetActive(false);
@@ -49,6 +52,7 @@ public class CharacterShopMenu : MonoBehaviour
     }
     void onclickSpecial()
     {
+        AudioManager.instance.playSwapSound();
         commonBG.SetActive(false);
         EpicBg.SetActive(false);
         SpecialBG.SetActive(true);

@@ -46,6 +46,10 @@ public class CharacterSelectionManager : MonoBehaviour
         SpecialChar[5].onClick.AddListener(onClickSpecial5Button);
         
     }
+    private void Awake()
+    {
+        InstertitialAds.instance.ShowAd();
+    }
 
     private void Update()
     {
@@ -57,6 +61,7 @@ public class CharacterSelectionManager : MonoBehaviour
     }
     void onClickCommon0Button()
     {
+        AudioManager.instance.playTabSound();
         StaticData.CharacterValue = 100;
         StaticData.SaveCharacterValue = true;
         setAllCharacterActiveFalse();
@@ -64,153 +69,183 @@ public class CharacterSelectionManager : MonoBehaviour
     }
     void onClickCommon1Button()
     {
+        AudioManager.instance.playTabSound();
         StaticData.CharacterValue = 101;
         StaticData.SaveCharacterValue = true;
     }
     void onClickCommon2Button()
     {
+        AudioManager.instance.playTabSound();
         StaticData.CharacterValue = 102;
         StaticData.SaveCharacterValue = true;
     }
     void onClickCommon3Button()
     {
+        AudioManager.instance.playTabSound();
         StaticData.CharacterValue = 103;
         StaticData.SaveCharacterValue = true;
     }
     void onClickCommon4Button()
     {
+        AudioManager.instance.playTabSound();
         StaticData.CharacterValue = 104;
         StaticData.SaveCharacterValue = true;
     }
     void onClickCommon5Button()
     {
+        AudioManager.instance.playTabSound();
         StaticData.CharacterValue = 105;
         StaticData.SaveCharacterValue = true;
     }
     void onClickCommon6Button()
     {
+        AudioManager.instance.playTabSound();
         StaticData.CharacterValue = 106;
         StaticData.SaveCharacterValue = true;
     }
     void onClickCommon7Button()
     {
+        AudioManager.instance.playTabSound();
         StaticData.CharacterValue = 107;
         StaticData.SaveCharacterValue = true;
     }
     void onClickCommon8Button()
     {
+        AudioManager.instance.playTabSound();
         StaticData.CharacterValue = 108;
         StaticData.SaveCharacterValue = true;
     }
     //for rear characters
     void onClickRear0Button()
     {
+        AudioManager.instance.playTabSound();
         StaticData.CharacterValue = 200;
         StaticData.SaveCharacterValue = true;
     }
     void onClickRear1Button()
     {
+        AudioManager.instance.playTabSound();
         StaticData.CharacterValue = 201;
         StaticData.SaveCharacterValue = true;
     }
     void onClickRear2Button()
     {
+        AudioManager.instance.playTabSound();
         StaticData.CharacterValue = 202;
         StaticData.SaveCharacterValue = true;
     }
     void onClickRear3Button()
     {
+        AudioManager.instance.playTabSound();
         StaticData.CharacterValue = 203;
         StaticData.SaveCharacterValue = true;
     }
     void onClickRear4Button()
     {
+        AudioManager.instance.playTabSound();
         StaticData.CharacterValue = 204;
         StaticData.SaveCharacterValue = true;
     }
     void onClickRear5Button()
     {
+        AudioManager.instance.playTabSound();
         StaticData.CharacterValue = 205;
         StaticData.SaveCharacterValue = true;
     }
     void onClickRear6Button()
     {
+        AudioManager.instance.playTabSound();
         StaticData.CharacterValue = 206;
         StaticData.SaveCharacterValue = true;
     }
     void onClickRear7Button()
     {
+        AudioManager.instance.playTabSound();
         StaticData.CharacterValue = 207;
         StaticData.SaveCharacterValue = true;
     }
     void onClickRear8Button()
     {
+        AudioManager.instance.playTabSound();
         StaticData.CharacterValue = 208;
         StaticData.SaveCharacterValue = true;
     }
     void onClickEpic0Button()
     {
+        AudioManager.instance.playTabSound();
         StaticData.CharacterValue = 300;
         StaticData.SaveCharacterValue = true;
 
     }
     void onClickEpic1Button()
     {
+        AudioManager.instance.playTabSound();
         StaticData.CharacterValue = 301;
         StaticData.SaveCharacterValue = true;
     }
     void onClickEpic2Button()
     {
+        AudioManager.instance.playTabSound();
         StaticData.CharacterValue = 302;
         StaticData.SaveCharacterValue = true;
     }
     void onClickEpic3Button()
     {
+        AudioManager.instance.playTabSound();
         StaticData.CharacterValue = 303;
         StaticData.SaveCharacterValue = true;
     }
     void onClickEpic4Button()
     {
+        AudioManager.instance.playTabSound();
         StaticData.CharacterValue = 304;
         StaticData.SaveCharacterValue = true;
     }
     void onClickEpic5Button()
     {
+        AudioManager.instance.playTabSound();
         StaticData.CharacterValue = 305;
         StaticData.SaveCharacterValue = true;
     }
     void onClickEpic6Button()
     {
+        AudioManager.instance.playTabSound();
         StaticData.CharacterValue = 306;
         StaticData.SaveCharacterValue = true;
     }
     void onClickSpecial0Button()
     {
+        AudioManager.instance.playTabSound();
         StaticData.CharacterValue = 400;
         StaticData.SaveCharacterValue = true;
     }
     void onClickSpecial1Button()
     {
+        AudioManager.instance.playTabSound();
         StaticData.CharacterValue = 401;
         StaticData.SaveCharacterValue = true;
     }
     void onClickSpecial2Button()
     {
+        AudioManager.instance.playTabSound();
         StaticData.CharacterValue = 402;
         StaticData.SaveCharacterValue = true;
     }
     void onClickSpecial3Button()
     {
+        AudioManager.instance.playTabSound();
         StaticData.CharacterValue = 403;
         StaticData.SaveCharacterValue = true;
     }
     void onClickSpecial4Button()
     {
+        AudioManager.instance.playTabSound();
         StaticData.CharacterValue = 404;
         StaticData.SaveCharacterValue = true;
     }
     void onClickSpecial5Button()
     {
+        AudioManager.instance.playTabSound();
         StaticData.CharacterValue = 405;
         StaticData.SaveCharacterValue = true;
     }

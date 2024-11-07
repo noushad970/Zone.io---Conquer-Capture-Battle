@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class OpenBoxAndGetGift : MonoBehaviour
 {
+    public static OpenBoxAndGetGift instance;
     public GameObject giftBox;
     public GameObject rewardParent;
     public GameObject[] rewardChar;
@@ -17,6 +18,9 @@ public class OpenBoxAndGetGift : MonoBehaviour
     public static bool isClosedMysteryBox;
     public Button openMysteryBoxButton;
     public GameObject charBar;
+    public Button testBoxOpenButton;
+
+    public Button[] buttonsToDisable;
     // Start is called before the first frame update
     void Start()
     {
@@ -24,7 +28,9 @@ public class OpenBoxAndGetGift : MonoBehaviour
         isClosedMysteryBox = false;
         isOpeningCreate = false;
         setActiveCharfalse();
-        openMysteryBoxButton.onClick.AddListener(OpenBox);
+        //  testBoxOpenButton.onClick.AddListener(OpenBox);
+       // openMysteryBoxButton.onClick.AddListener(OpenBox);
+        instance = this; 
     }
     private void Update()
     {
@@ -36,18 +42,33 @@ public class OpenBoxAndGetGift : MonoBehaviour
         {
             giftBox.SetActive(false);
         }
-
+        
         Debug.Log("CloudSaveManager.instance.specialCarVal: " + CloudSaveManager.instance.specialCarVal);
     }
-    void OpenBox()
+    public void OpenBox()
     {
+        AudioManager.instance.playUnlockOrBuySound();
         StartCoroutine(openCreate());
+    }
+    void disableButtons()
+    {
+        for(int i=0;i<buttonsToDisable.Length;i++)
+        {
+            buttonsToDisable[i].enabled = false;
+        }
+    }
+    void enableButton()
+    {
+        for (int i = 0; i < buttonsToDisable.Length; i++)
+        {
+            buttonsToDisable[i].enabled = true;
+        }
     }
     //25 for character, 49 for 10k coins, 40-45 for 1 gem
     IEnumerator openCreate()
     {
         charBarForBoxOpen.SetActive(true);
-
+        disableButtons();
         charBarForMenuCharacter.SetActive(false);
         for(int i=0; i < mainGamePanels.Length; i++)
         {
@@ -162,7 +183,7 @@ public class OpenBoxAndGetGift : MonoBehaviour
         isClosedMysteryBox = true;
         charBarForBoxOpen.SetActive(false);
         charBarForMenuCharacter.SetActive(true);
-
+        enableButton();
 
     }
     void setActiveCharfalse()

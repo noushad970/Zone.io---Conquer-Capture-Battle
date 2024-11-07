@@ -6,7 +6,7 @@ public class CharacterArea : MonoBehaviour
 {
 	public Character character;
 	public MeshCollider coll;
-
+	//awake to start
 	private void Awake()
 	{
 		coll = gameObject.AddComponent<MeshCollider>();

@@ -11,7 +11,7 @@ public class StaticData
     public static int specialCharData;
     public static int DifficultyLevelData;
     public static int CharacterValue;
-
+    public static int totalMatchPlayed;
     //all boolean value for save the data to server
     public static bool SaveCoinData;
     public static bool SaveGemData;
@@ -23,7 +23,7 @@ public class StaticData
     public static bool SaveDifficultyLevelData;
     public static bool SaveSpeedupDurationUpdate;
     public static bool SavePoisonDurationUpdate;
-
+    public static bool SaveTotalplayMatchCount;
 
 
 }

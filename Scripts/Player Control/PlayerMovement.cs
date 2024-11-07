@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class PlayerMovement : Character
 {
-	public float sensitivity = 300f;
-	public float turnTreshold = 15f;
+	public float sensitivity = 250f;
+	public float turnTreshold = 13f;
 	private Vector3 mouseStartPos;
 
 	public override void Update()

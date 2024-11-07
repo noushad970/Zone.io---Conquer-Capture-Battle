@@ -16,6 +16,7 @@ public class PlayMenuUIManagement : MonoBehaviour
     // Update is called once per frame
     void OnclickSetting()
     {
+        AudioManager.instance.playSwapSound();
         setting.SetActive(true);
     }
 }

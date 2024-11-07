@@ -12,9 +12,14 @@ public class EnemySpawnerAI : MonoBehaviour
     bool isReadyToSpawn = false;
     public static int totalEnemiesPresent = 0;
     int randomNumber;
+    public static int totalPlayerEliminateByPlayer, totalCollectedCoins;
     bool spawnFromPoint1, spawnFromPoint2, spawnFromPoint3, spawnFromPoint4;
+    public static bool enemyStop;
     void Start()
     {
+        enemyStop = false;
+        totalCollectedCoins = 0;
+        totalPlayerEliminateByPlayer =0;
         totalEnemiesPresent = 0;
         isReadyToSpawn = false;
         spawnFromPoint1 = false;
@@ -38,6 +43,8 @@ public class EnemySpawnerAI : MonoBehaviour
         if (isReadyToSpawn)
         {
             StartCoroutine(SpawnDelay());
+            
+            Debug.Log("EnemyDestroyed:" + totalPlayerEliminateByPlayer);
         }
         if(E1==null)
         {

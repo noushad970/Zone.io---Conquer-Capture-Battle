@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class BuyCoinFromShop : MonoBehaviour
 {
     public Button buy200CoinButton, buy1000CoinButton, buy2000CoinButton, buy4000CoinButton;
+    public GameObject notEnoughCoin;
     // Start is called before the first frame update
     void Start()
     {
@@ -17,9 +18,11 @@ public class BuyCoinFromShop : MonoBehaviour
 
     void onClickBuy200Coin()
     {
+
         if (CloudSaveManager.instance.totalGem >= 35)
         {
             //buy
+            AudioManager.instance.playCoinSound();
             StaticData.gemData = -35;
             StaticData.SaveGemData = true;
             StaticData.coinData = 200;
@@ -28,6 +31,7 @@ public class BuyCoinFromShop : MonoBehaviour
         else
         {
             //not enough coin
+            notEnoughCoin.SetActive(true);
             Debug.Log("Not Enough gem for buy coins");
         }
     }
@@ -36,6 +40,7 @@ public class BuyCoinFromShop : MonoBehaviour
         if (CloudSaveManager.instance.totalGem >= 125)
         {
             //buy
+            AudioManager.instance.playCoinSound();
             StaticData.gemData = -125;
             StaticData.SaveGemData = true;
             StaticData.coinData = 1000;
@@ -44,6 +49,7 @@ public class BuyCoinFromShop : MonoBehaviour
         else
         {
             //not enough coin
+            notEnoughCoin.SetActive(true);
             Debug.Log("Not Enough gem for buy coins");
         }
     }
@@ -52,6 +58,7 @@ public class BuyCoinFromShop : MonoBehaviour
         if (CloudSaveManager.instance.totalGem >= 200)
         {
             //buy
+            AudioManager.instance.playCoinSound();
             StaticData.gemData = -200;
             StaticData.SaveGemData = true;
             StaticData.coinData = 2000;
@@ -60,6 +67,7 @@ public class BuyCoinFromShop : MonoBehaviour
         else
         {
             //not enough coin
+            notEnoughCoin.SetActive(true);
             Debug.Log("Not Enough gem for buy coins");
         }
     }
@@ -68,6 +76,7 @@ public class BuyCoinFromShop : MonoBehaviour
         if (CloudSaveManager.instance.totalGem >= 350)
         {
             //buy
+            AudioManager.instance.playCoinSound();
             StaticData.gemData = -350;
             StaticData.SaveGemData = true;
             StaticData.coinData = 4000;
@@ -76,6 +85,7 @@ public class BuyCoinFromShop : MonoBehaviour
         else
         {
             //not enough coin
+            notEnoughCoin.SetActive(true);
             Debug.Log("Not Enough gem for buy coins");
         }
     }

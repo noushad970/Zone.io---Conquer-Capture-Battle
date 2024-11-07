@@ -21,10 +21,12 @@ public class SpeedAndPoisonPowerUpUpgrade : MonoBehaviour
     }
     void onClickUpdateSpeedUp()
     {
+        AudioManager.instance.playTabSound();
         if (CloudSaveManager.instance.SpeedUpDurationValue == 0)
         {
             if (CloudSaveManager.instance.totalCoin >= 100)
             {
+                AudioManager.instance.playUnlockOrBuySound();
                 StaticData.SaveSpeedupDurationUpdate = true;
                 StaticData.coinData = -100;
                 StaticData.SaveCoinData = true;
@@ -40,6 +42,7 @@ public class SpeedAndPoisonPowerUpUpgrade : MonoBehaviour
         {
             if (CloudSaveManager.instance.totalCoin >= 200)
             {
+                AudioManager.instance.playUnlockOrBuySound();
                 StaticData.SaveSpeedupDurationUpdate = true;
                 StaticData.coinData = -200;
                 StaticData.SaveCoinData = true;
@@ -54,6 +57,7 @@ public class SpeedAndPoisonPowerUpUpgrade : MonoBehaviour
         {
             if (CloudSaveManager.instance.totalCoin >= 500)
             {
+                AudioManager.instance.playUnlockOrBuySound();
                 StaticData.SaveSpeedupDurationUpdate = true;
                 StaticData.coinData = -500;
                 StaticData.SaveCoinData = true;
@@ -68,6 +72,7 @@ public class SpeedAndPoisonPowerUpUpgrade : MonoBehaviour
         {
             if (CloudSaveManager.instance.totalCoin >= 1000)
             {
+                AudioManager.instance.playUnlockOrBuySound();
                 StaticData.SaveSpeedupDurationUpdate = true;
                 StaticData.coinData = -1000;
                 StaticData.SaveCoinData = true;
@@ -82,6 +87,7 @@ public class SpeedAndPoisonPowerUpUpgrade : MonoBehaviour
         {
             if (CloudSaveManager.instance.totalCoin >= 2000)
             {
+                AudioManager.instance.playUnlockOrBuySound();
                 StaticData.SaveSpeedupDurationUpdate = true;
                 StaticData.coinData = -2000;
                 StaticData.SaveCoinData = true;
@@ -96,6 +102,7 @@ public class SpeedAndPoisonPowerUpUpgrade : MonoBehaviour
         {
             if (CloudSaveManager.instance.totalCoin >= 5000)
             {
+                AudioManager.instance.playUnlockOrBuySound();
                 StaticData.SaveSpeedupDurationUpdate = true;
                 StaticData.coinData = -5000;
                 StaticData.SaveCoinData = true;
@@ -110,10 +117,13 @@ public class SpeedAndPoisonPowerUpUpgrade : MonoBehaviour
     }
     void onClickUpdatePoison()
     {
+        AudioManager.instance.playTabSound();
         if (CloudSaveManager.instance.PoisonDurationValue == 0)
         {
             if (CloudSaveManager.instance.totalCoin >= 100)
             {
+                AudioManager.instance.playUnlockOrBuySound();
+
                 StaticData.SavePoisonDurationUpdate = true;
                 StaticData.coinData = -100;
                 StaticData.SaveCoinData = true;
@@ -129,6 +139,7 @@ public class SpeedAndPoisonPowerUpUpgrade : MonoBehaviour
         {
             if (CloudSaveManager.instance.totalCoin >= 200)
             {
+                AudioManager.instance.playUnlockOrBuySound();
                 StaticData.SavePoisonDurationUpdate = true;
                 StaticData.coinData = -200;
                 StaticData.SaveCoinData = true;
@@ -143,6 +154,7 @@ public class SpeedAndPoisonPowerUpUpgrade : MonoBehaviour
         {
             if (CloudSaveManager.instance.totalCoin >= 500)
             {
+                AudioManager.instance.playUnlockOrBuySound();
                 StaticData.SavePoisonDurationUpdate = true;
                 StaticData.coinData = -500;
                 StaticData.SaveCoinData = true;
@@ -157,6 +169,7 @@ public class SpeedAndPoisonPowerUpUpgrade : MonoBehaviour
         {
             if (CloudSaveManager.instance.totalCoin >= 1000)
             {
+                AudioManager.instance.playUnlockOrBuySound();
                 StaticData.SavePoisonDurationUpdate = true;
                 StaticData.coinData = -1000;
                 StaticData.SaveCoinData = true;
@@ -171,6 +184,7 @@ public class SpeedAndPoisonPowerUpUpgrade : MonoBehaviour
         {
             if (CloudSaveManager.instance.totalCoin >= 2000)
             {
+                AudioManager.instance.playUnlockOrBuySound();
                 StaticData.SavePoisonDurationUpdate = true;
                 StaticData.coinData = -2000;
                 StaticData.SaveCoinData = true;
@@ -185,6 +199,7 @@ public class SpeedAndPoisonPowerUpUpgrade : MonoBehaviour
         {
             if (CloudSaveManager.instance.totalCoin >= 5000)
             {
+                AudioManager.instance.playUnlockOrBuySound();
                 StaticData.SavePoisonDurationUpdate = true;
                 StaticData.coinData = -5000;
                 StaticData.SaveCoinData = true;
@@ -205,44 +220,44 @@ public class SpeedAndPoisonPowerUpUpgrade : MonoBehaviour
         if (CloudSaveManager.instance.PoisonDurationValue == 0)
         {
             PoisonUpdateAmountText.text = "100";
-           //
-            speedUpAllFalse();
+            CharacterPowerUp.PoisonEffectDuration = 2;
+            PoisonAllFalse();
             PoisonSpeedDown[0].SetActive(true);
 
         }
         else if (CloudSaveManager.instance.PoisonDurationValue == 1)
         {
             PoisonUpdateAmountText.text = "200";
-            
-            speedUpAllFalse();
+            CharacterPowerUp.PoisonEffectDuration = 3;
+            PoisonAllFalse();
             PoisonSpeedDown[1].SetActive(true);
         }
         else if (CloudSaveManager.instance.PoisonDurationValue == 2)
         {
             PoisonUpdateAmountText.text = "500";
-            
-            speedUpAllFalse();
+            CharacterPowerUp.PoisonEffectDuration = 4;
+            PoisonAllFalse();
             PoisonSpeedDown[2].SetActive(true);
         }
         else if (CloudSaveManager.instance.PoisonDurationValue == 3)
         {
             PoisonUpdateAmountText.text = "1000";
-           
-            speedUpAllFalse();
+            CharacterPowerUp.PoisonEffectDuration = 5;
+            PoisonAllFalse();
             PoisonSpeedDown[3].SetActive(true);
         }
         else if (CloudSaveManager.instance.PoisonDurationValue == 4)
         {
             PoisonUpdateAmountText.text = "2000";
-           
-            speedUpAllFalse();
+            CharacterPowerUp.PoisonEffectDuration = 6;
+            PoisonAllFalse();
             PoisonSpeedDown[4].SetActive(true);
         }
         else if (CloudSaveManager.instance.PoisonDurationValue == 5)
         {
             PoisonUpdateAmountText.text = "5000";
-            
-            speedUpAllFalse();
+            CharacterPowerUp.PoisonEffectDuration = 7;
+            PoisonAllFalse();
             PoisonSpeedDown[5].SetActive(true);
         }
         else if (CloudSaveManager.instance.PoisonDurationValue == 6)
@@ -306,6 +321,13 @@ public class SpeedAndPoisonPowerUpUpgrade : MonoBehaviour
         for(int i=0;i<speedUp.Length;i++)
         {
             speedUp[i].SetActive(false);
+        }
+    }
+    void PoisonAllFalse()
+    {
+        for (int i = 0; i < PoisonSpeedDown.Length; i++)
+        {
+            PoisonSpeedDown[i].SetActive(false);
         }
     }
 }

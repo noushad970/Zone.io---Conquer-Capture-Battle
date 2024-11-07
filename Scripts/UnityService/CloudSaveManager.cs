@@ -21,6 +21,7 @@ public class CloudSaveManager : MonoBehaviour
     private const string SELECT_CHAR_VALUE = "select_character_value";
     private const string SPEED_POWER_UP_VALUE = "select_character_speed_up_value";
     private const string SPEED_POISON_VALUE = "select_character_poison_value";
+    private const string TOTAL_MATCHP_PLAYED_VALUE = "total_match_played";
 
     private const string Difficulti_Level_KEY = "player_dificulty";
     
@@ -28,11 +29,12 @@ public class CloudSaveManager : MonoBehaviour
     public Text playerName;
     private const string FirstPushKeys = "FirstCloudPushs";
     [HideInInspector]
-    public int totalCoin = 0, totalGem = 0,commonCharVal,rearCharVal,epicCharVal,specialCarVal,selectedCharValue,difficultyLevel, SpeedUpDurationValue, PoisonDurationValue;
+    public int totalCoin = 0, totalGem = 0,commonCharVal,rearCharVal,epicCharVal,specialCarVal,selectedCharValue,difficultyLevel, SpeedUpDurationValue, PoisonDurationValue, totalMatchPlayed;
     // This function initializes Unity Gaming Services and authenticates the player
+    
     private async void Start()
     {
-
+        //DontDestroyOnLoad(this);
         await InitializeUnityServices();
         string st = await AuthenticationService.Instance.GetPlayerNameAsync();
         if (!PlayerPrefs.HasKey(FirstPushKeys))
@@ -41,9 +43,14 @@ public class CloudSaveManager : MonoBehaviour
             await SaveCoins(0);
             await SaveGems(0);
             await SaveCharValue(100);
+            await SaveCharCommon(0);
+            await SaveCharEpic(-1);
+            await SaveCharSpecial(-1);
             await SaveDifficultyLevel(1);
             await SaveSpeedPowerUpValue(0);
             await SavePoisonPowerUpValue(0);
+            await SaveTotalNumberOfMatch(0);
+
             // Set a local flag indicating the push has occurred
             PlayerPrefs.SetInt(FirstPushKeys, 1);
             PlayerPrefs.Save();
@@ -52,11 +59,13 @@ public class CloudSaveManager : MonoBehaviour
         await GetSavedCharCommon();
         await GetSavedCharEpic();
         await GetSavedCharSpecial();
+        await GetSavedTotalNumberOfMatch();
         await GetSavedGems();
         await GetSavedCharValue();
         await GetSavedDifficulty();
         await GetSavedSpeedPowerUpValue();
         await GetSavedPoisonPowerUpValue();
+        
         /*
          * nicknames
          * submitNickNameButton.onClick.AddListener(setNickName);
@@ -70,9 +79,29 @@ public class CloudSaveManager : MonoBehaviour
             nicknameSetPanel.SetActive(false); 
         }*/
     }
-    private void Awake()
+    private async void Awake()
     {
-        instance = this;
+        if (instance == null)
+        {
+            // If not, set this as the instance and mark it to not be destroyed
+            instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            await GetSavedCoins();
+            await GetSavedCharCommon();
+            await GetSavedCharEpic();
+            await GetSavedCharSpecial();
+            await GetSavedTotalNumberOfMatch();
+            await GetSavedGems();
+            await GetSavedCharValue();
+            await GetSavedDifficulty();
+            await GetSavedSpeedPowerUpValue();
+            await GetSavedPoisonPowerUpValue();
+            // If an instance already exists, destroy this duplicate
+            Destroy(gameObject);
+        }
     }
 
     private async void Update()
@@ -124,6 +153,11 @@ public class CloudSaveManager : MonoBehaviour
         {
             StaticData.SavePoisonDurationUpdate=false;
             await UpdatePoisonPowerUpValue();
+        }
+        if (StaticData.SaveTotalplayMatchCount)
+        {
+            StaticData.SaveTotalplayMatchCount = false;
+            await UpdateTotalNumberOfMatch();
         }
     }
 
@@ -386,7 +420,7 @@ public class CloudSaveManager : MonoBehaviour
             await SaveCharSpecial(updatedCharSpecial);
 
         }
-
+    
     
     //save character value to select character on game data to cloud
     public async Task SaveCharValue(int CharValue)
@@ -419,7 +453,7 @@ public class CloudSaveManager : MonoBehaviour
             {
                 int CharValue = Convert.ToInt32(savedData[SELECT_CHAR_VALUE]);
                 selectedCharValue = CharValue;
-                Debug.Log($"CharVal loaded from cloud: {CharValue}");
+                Debug.Log($"CharVal loaded from cloud: {selectedCharValue   }");
                 readyToShowCharacterInMenu= true;
                 return CharValue;
             }
@@ -763,6 +797,64 @@ public class CloudSaveManager : MonoBehaviour
 
         Debug.Log($"Coins updated. New total: {updatedLevel}");
     }
+    //update total play game match
+    public async Task SaveTotalNumberOfMatch(int matchPlayed)
+    {
+        try
+        {
+            var data = new Dictionary<string, object>
+                {
+                    { TOTAL_MATCHP_PLAYED_VALUE, matchPlayed }
+                };
+
+            await CloudSaveService.Instance.Data.ForceSaveAsync(data);
+            Debug.Log($"total match played number saved successfully: {matchPlayed}");
+            await GetSavedTotalNumberOfMatch();
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"Error saving : {e}");
+        }
+    }
+
+    // Fetch player's saved coins from Unity Cloud Save
+    public async Task<int> GetSavedTotalNumberOfMatch()
+    {
+        try
+        {
+            var savedData = await CloudSaveService.Instance.Data.LoadAsync(new HashSet<string> { TOTAL_MATCHP_PLAYED_VALUE });
+
+            if (savedData.ContainsKey(TOTAL_MATCHP_PLAYED_VALUE))
+            {
+                int matchPlayed = Convert.ToInt32(savedData[TOTAL_MATCHP_PLAYED_VALUE]);
+                totalMatchPlayed = matchPlayed;
+                Debug.Log($"CharEpic loaded from cloud: {matchPlayed}");
+
+                return matchPlayed;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+        catch (Exception e)
+        {
+            return 0;
+        }
+    }
+
+    // Update player's coins (this will overwrite the previous value in Cloud Save)
+    public async Task UpdateTotalNumberOfMatch()
+    {
+        // Fetch the current saved coins
+        int currentmatchPlayed = await GetSavedTotalNumberOfMatch();
+        int updatedmatchPlayed = currentmatchPlayed + 1;
+
+
+        await SaveTotalNumberOfMatch(updatedmatchPlayed);
+
+    }
+
 
 }
 

@@ -42,6 +42,7 @@ public class DownBarButtonManagement : MonoBehaviour
     
     void OnclickItem()
     {
+        AudioManager.instance.playSwapSound();
         ItemStoreButton.enabled = false;
         CharStoreButton.enabled = true;
         PlayMenuButton.enabled = true;
@@ -58,6 +59,7 @@ public class DownBarButtonManagement : MonoBehaviour
     }
     void OnclickChar()
     {
+        AudioManager.instance.playSwapSound();
         ItemStoreButton.enabled = true;
         CharStoreButton.enabled = false;
         PlayMenuButton.enabled = true;
@@ -73,6 +75,7 @@ public class DownBarButtonManagement : MonoBehaviour
     }
     void OnclickPlay()
     {
+        AudioManager.instance.playSwapSound();
         ItemStoreButton.enabled = true;
         CharStoreButton.enabled = true;
         PlayMenuButton.enabled = false;
@@ -88,6 +91,7 @@ public class DownBarButtonManagement : MonoBehaviour
     }
     void OnclickPower()
     {
+        AudioManager.instance.playSwapSound();
         ItemStoreButton.enabled = true;
         CharStoreButton.enabled = true;
         PlayMenuButton.enabled = true;
@@ -103,6 +107,7 @@ public class DownBarButtonManagement : MonoBehaviour
     }
     void OnclickExit()
     {
+        AudioManager.instance.playSwapSound();
         ItemStoreButton.enabled = true;
         CharStoreButton.enabled = true;
         PlayMenuButton.enabled = true;
@@ -130,6 +135,7 @@ public class DownBarButtonManagement : MonoBehaviour
     }
     void DisableExitConfirmationPanel()
     {
+        AudioManager.instance.playTabSound();
         ExitGame.SetActive(false);
         OnclickPlay();
     }

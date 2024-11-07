@@ -8,18 +8,20 @@ public class GameManager : MonoBehaviour
 {
 	public static GameManager gm;
 	public MainMenu mm;
-
-	private void Awake()
+    //awake to start
+    private void Awake()
 	{
 		if (!gm)
 		{
 			gm = this;
 			DontDestroyOnLoad(this);
 		}
-	}
-
-	private void Update()
+        
+    }
+   
+    private void Update()
 	{
+		
 		if (Input.GetKeyDown(KeyCode.R))
 		{			
 			RestartScene();			
@@ -27,18 +29,46 @@ public class GameManager : MonoBehaviour
 	}
 
 	public void RestartScene()
-	{
-		Time.timeScale = 1f;
+    {
+        AudioManager.instance.playTabSound();
+        Time.timeScale = 1f;
 		SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-	}
+       
+    }
 
 	public void GameOver()
 	{
-		Time.timeScale = 0;
+        Time.timeScale = 0;
 		mm.GameOver();
 	}
-
-	public static void DeformCharacterArea(Character character, List<Vector3> newAreaVertices)
+	public void pauseMenu()
+    {
+        
+        Time.timeScale = 0;
+    }
+	public void resumeMenu()
+    {
+        
+        Time.timeScale = 1;
+        StaticData.coinData = ((EnemySpawnerAI.totalPlayerEliminateByPlayer * 10) + (SceneTimeCounter.TotalTime / 4));
+        StaticData.SaveCoinData = true;
+        EnemySpawnerAI.totalPlayerEliminateByPlayer = 0;
+        SceneTimeCounter.TotalTime = 0;
+    }
+    public void gotoMainMenu()
+    {
+       
+        Time.timeScale = 1;
+        AudioManager.instance.playTabSound();
+        StaticData.coinData = ((EnemySpawnerAI.totalPlayerEliminateByPlayer * 10) + (SceneTimeCounter.TotalTime / 4));
+        StaticData.SaveCoinData = true;
+        EnemySpawnerAI.totalPlayerEliminateByPlayer = 0;
+        SceneTimeCounter.TotalTime = 0;
+       
+        Debug.Log("Click on gotoMainMenu");
+        SceneManager.LoadScene("MenuManager");
+    }
+    public static void DeformCharacterArea(Character character, List<Vector3> newAreaVertices)
 	{
 		int newAreaVerticesCount = newAreaVertices.Count;
 		if (newAreaVerticesCount > 0)

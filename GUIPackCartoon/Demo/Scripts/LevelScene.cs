@@ -24,8 +24,8 @@ namespace Ricimi
         private int m_currentLevelIndex = 0;
 
         private Animator m_animator;
-
-        private void Awake()
+        //awake to start
+        private void Start()
         {
             m_animator = levelGroup.GetComponent<Animator>();
         }

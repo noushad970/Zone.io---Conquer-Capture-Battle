@@ -45,6 +45,7 @@ namespace Ricimi
         // and into the new scene.
         private IEnumerator RunFade(string level, float duration, Color fadeColor)
         {
+
             var bgTex = new Texture2D(1, 1);
             bgTex.SetPixel(0, 0, fadeColor);
             bgTex.Apply();

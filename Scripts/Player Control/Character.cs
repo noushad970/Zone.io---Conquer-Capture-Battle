@@ -26,7 +26,7 @@ public class Character : MonoBehaviour
 	private MeshFilter areaOutlineFilter;
 
 	[Header("Movement")]
-	public float speed = 1f;
+	public float speed = 2f;
 	 float turnSpeed = 7f;
 	public TrailRenderer trail;
 	public GameObject trailCollidersHolder;
@@ -35,12 +35,18 @@ public class Character : MonoBehaviour
 	protected Rigidbody rb;
 	protected Vector3 curDir;
 	protected Quaternion targetRot;
+	
 	// This will store the last attacker
 	Animator anim;
 	GameObject explode;
 	private void Awake()
 	{
-		speed=1f;
+		if(!player && CloudSaveManager.instance.difficultyLevel==1)
+        speed =2f;
+        else if (!player && CloudSaveManager.instance.difficultyLevel == 2)
+            speed = 2.5f;
+        else if (!player && CloudSaveManager.instance.difficultyLevel == 3)
+            speed = 3f;
         Transform explodeTransform = transform.Find("Explode");
 		
         if (explodeTransform!=null)
@@ -60,14 +66,48 @@ public class Character : MonoBehaviour
 	}
 
 	public virtual void Start()
-	{ 
+	{
 		InitializeCharacter();
 	}
+    private void LateUpdate()
+    {
+        if (!player)
+        {
+            if (CharacterPowerUp.activespeedDown && CloudSaveManager.instance.difficultyLevel==1)
+            {
+                speed = 0.8f;
+            }
+            else if(!CharacterPowerUp.activespeedDown && CloudSaveManager.instance.difficultyLevel==1)
+            {
+                speed = 2f;
+            }
 
-	public virtual void Update()
+            if (CharacterPowerUp.activespeedDown && CloudSaveManager.instance.difficultyLevel == 2)
+            {
+                speed = 1.2f;
+            }
+            else if (!CharacterPowerUp.activespeedDown && CloudSaveManager.instance.difficultyLevel == 2)
+            {
+                speed = 2.5f;
+            }
+
+            if (CharacterPowerUp.activespeedDown && CloudSaveManager.instance.difficultyLevel == 3)
+            {
+                speed = 1.8f;
+            }
+            else if (!CharacterPowerUp.activespeedDown && CloudSaveManager.instance.difficultyLevel == 3)
+            {
+                speed = 3f;
+            }
+
+        }
+    }
+	bool isVibrate;
+    public virtual void Update()
 	{
 		var trans = transform;
 		var transPos = trans.position;
+		//here is the value
 		trans.position = Vector3.ClampMagnitude(transPos, 50f);
 		bool isOutside = !GameManager.IsPointInPolygon(new Vector2(transPos.x, transPos.z), Vertices2D(areaVertices));
 		int count = newAreaVertices.Count;
@@ -104,10 +144,12 @@ public class Character : MonoBehaviour
 				trail.emitting = true;
 			}
 			Debug.Log("Outside");
+			
+			
 		}
 		else if (count > 0)
 		{
-
+			
 			Debug.Log("Not Outside");
 			GameManager.DeformCharacterArea(this, newAreaVertices);
 
@@ -246,25 +288,42 @@ public class Character : MonoBehaviour
 
 	
     public void Die()
-	{
-		StartCoroutine(playingDieAnim());
+    {
+        StartCoroutine(playingDieAnim());
 	}
 	IEnumerator playingDieAnim()
 	{
 		anim.Play("Die");
 		speed = 0f;
+		
 		if (!player)
 		{
             StartCoroutine(playExplodeParticle());
+
+		}
+		else if(player)
+		{
+            AudioManager.instance.PlayGameOverSound();
+            VibrateController.instance.Buy();
         }
         yield return new WaitForSeconds(1f);
         if (player)
         {
             GameManager.gm.GameOver();
+			StaticData.coinData = ((EnemySpawnerAI.totalPlayerEliminateByPlayer * 10 )+ (SceneTimeCounter.TotalTime / 4));
+			StaticData.SaveCoinData = true;
+            EnemySpawnerAI.totalCollectedCoins += ((EnemySpawnerAI.totalPlayerEliminateByPlayer * 10) + (SceneTimeCounter.TotalTime / 4));
+			Debug.Log("Total Coins Collected:" + EnemySpawnerAI.totalCollectedCoins +"; Total Player Eliminate:"+ EnemySpawnerAI.totalPlayerEliminateByPlayer);
+			EnemySpawnerAI.totalPlayerEliminateByPlayer = 0;
+			SceneTimeCounter.TotalTime = 0;
+			SceneTimeCounter.TotalTime = 0;
+
         }
         else
         {
+
             EnemySpawnerAI.totalEnemiesPresent -= 1;
+            
             Destroy(gameObject);
             Destroy(area.gameObject);
             Destroy(areaOutline);
@@ -274,14 +333,23 @@ public class Character : MonoBehaviour
         }
 		speed = 1f;
     }
+	//
+	
 	IEnumerator playExplodeParticle()
 	{
         if (explode != null)
             explode.SetActive(true);
+		if (!AudioManager.instance.eliminateAenemy.isPlaying)
+			AudioManager.instance.playEliminateEnemySound();
+        VibrateController.instance.Buy();
+        EnemySpawnerAI.enemyStop=true;
 		yield return new WaitForSeconds(1f);
         if (explode != null)
             explode.SetActive(false);
-	}
+
+        EnemySpawnerAI.enemyStop = false;
+        EnemySpawnerAI.totalPlayerEliminateByPlayer += 1;
+    }
     private void OnTriggerEnter(Collider other)
     {
         CharacterArea characterArea = other.GetComponent<CharacterArea>();
@@ -294,6 +362,8 @@ public class Character : MonoBehaviour
         {
             characterArea = other.transform.parent.GetComponent<CharacterArea>();
             characterArea.character.Die();
+			
+                
         }
 
         
