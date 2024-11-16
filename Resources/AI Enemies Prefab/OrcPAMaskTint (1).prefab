@@ -467,6 +467,7 @@ MonoBehaviour:
   trail: {fileID: 0}
   trailCollidersHolder: {fileID: 0}
   trailColls: []
+  explode: {fileID: 2433282508537954060, guid: 442f30a34cabe364591f9533a67402e8, type: 3}
   positionsTillReturning: 2
 --- !u!114 &4673789427669288376
 MonoBehaviour:

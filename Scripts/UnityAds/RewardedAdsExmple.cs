@@ -27,7 +27,6 @@ public class RewardedAdsExample : MonoBehaviour, IUnityAdsLoadListener, IUnityAd
     private void Start()
     {
         LoadAd();
-        showAds.onClick.AddListener(ShowAd);
     }
 
     // Call this public method when you want to get an ad ready to show.

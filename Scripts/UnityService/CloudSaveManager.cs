@@ -6,6 +6,7 @@ using Unity.Services.Authentication;
 using Unity.Services.CloudSave;
 using Unity.Services.Core;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class CloudSaveManager : MonoBehaviour
 {
@@ -15,21 +16,21 @@ public class CloudSaveManager : MonoBehaviour
     private const string COIN_KEY = "player_coins";
     private const string GEM_KEY = "player_gems";
     private const string COMMON_CHAR_KEY = "common_character_value";
-    private const string REAR_CHAR_KEY = "rear_character_value";
     private const string EPIC_CHAR_KEY = "epic_character_value";
     private const string SPECIAL_CHAR_KEY = "special_character_value";
     private const string SELECT_CHAR_VALUE = "select_character_value";
     private const string SPEED_POWER_UP_VALUE = "select_character_speed_up_value";
     private const string SPEED_POISON_VALUE = "select_character_poison_value";
     private const string TOTAL_MATCHP_PLAYED_VALUE = "total_match_played";
+    private const string SELECT_MAP_VAL = "map_value";
 
-    private const string Difficulti_Level_KEY = "player_dificulty";
+    private const string DIFFICULTY_LEVEL_KEY = "player_dificulty";
     
     public Button updateCoinButton;
     public Text playerName;
     private const string FirstPushKeys = "FirstCloudPushs";
     [HideInInspector]
-    public int totalCoin = 0, totalGem = 0,commonCharVal,rearCharVal,epicCharVal,specialCarVal,selectedCharValue,difficultyLevel, SpeedUpDurationValue, PoisonDurationValue, totalMatchPlayed;
+    public int totalCoin = 0, totalGem = 0,commonCharVal,rearCharVal,epicCharVal,specialCarVal,selectedCharValue,difficultyLevel, SpeedUpDurationValue, PoisonDurationValue, totalMatchPlayed,mapValues;
     // This function initializes Unity Gaming Services and authenticates the player
     
     private async void Start()
@@ -50,7 +51,7 @@ public class CloudSaveManager : MonoBehaviour
             await SaveSpeedPowerUpValue(0);
             await SavePoisonPowerUpValue(0);
             await SaveTotalNumberOfMatch(0);
-
+            await SaveMapVal(0);
             // Set a local flag indicating the push has occurred
             PlayerPrefs.SetInt(FirstPushKeys, 1);
             PlayerPrefs.Save();
@@ -83,7 +84,7 @@ public class CloudSaveManager : MonoBehaviour
     {
         if (instance == null)
         {
-            // If not, set this as the instance and mark it to not be destroyed
+            // If not, set this as the Instance and mark it to not be destroyed
             instance = this;
             DontDestroyOnLoad(gameObject);
         }
@@ -99,7 +100,8 @@ public class CloudSaveManager : MonoBehaviour
             await GetSavedDifficulty();
             await GetSavedSpeedPowerUpValue();
             await GetSavedPoisonPowerUpValue();
-            // If an instance already exists, destroy this duplicate
+          
+            // If an Instance already exists, destroy this duplicate
             Destroy(gameObject);
         }
     }
@@ -112,32 +114,42 @@ public class CloudSaveManager : MonoBehaviour
             StaticData.SaveCoinData = false;
             await UpdateCoins(StaticData.coinData);
             StaticData.coinData = 0;
+            if(SceneManager.GetActiveScene().name=="MenuManager")
+            SplashScreenManager.Instance.showLoadingBar();
         }
         if (StaticData.SaveCommonCharData)
         {
             StaticData.SaveCommonCharData= false;
             await UpdateCharCommon();
+            if (SceneManager.GetActiveScene().name == "MenuManager")
+                SplashScreenManager.Instance.showLoadingBar();
         }
         if (StaticData.SaveGemData)
         {
             StaticData.SaveGemData = false;
             await UpdateGems(StaticData.gemData);
             StaticData.gemData = 0;
+            if (SceneManager.GetActiveScene().name == "MenuManager")
+                SplashScreenManager.Instance.showLoadingBar();
         }
         if (StaticData.SaveEpicCharData)
         {
             StaticData.SaveEpicCharData = false;
             await UpdateCharEpic();
+            if (SceneManager.GetActiveScene().name == "MenuManager")
+                SplashScreenManager.Instance.showLoadingBar();
         }
         if (StaticData.SaveSpecialCharData)
         {
             StaticData.SaveSpecialCharData = false;
             await UpdateCharSpecial();
+            SplashScreenManager.Instance.showLoadingBar();
         }
         if (StaticData.SaveCharacterValue)
         {
             StaticData.SaveCharacterValue = false;
-            await UpdateCharacterValue(StaticData.CharacterValue);
+            if (SceneManager.GetActiveScene().name == "MenuManager")
+                await UpdateCharacterValue(StaticData.CharacterValue);
         }
         if (StaticData.SaveDifficultyLevelData)
         {
@@ -148,16 +160,28 @@ public class CloudSaveManager : MonoBehaviour
         {
             StaticData.SaveSpeedupDurationUpdate=false;
             await UpdateSpeedPowerUpValue();
+            if (SceneManager.GetActiveScene().name == "MenuManager")
+                SplashScreenManager.Instance.showLoadingBar();
         }
         if (StaticData.SavePoisonDurationUpdate)
         {
             StaticData.SavePoisonDurationUpdate=false;
             await UpdatePoisonPowerUpValue();
+            if (SceneManager.GetActiveScene().name == "MenuManager")
+                SplashScreenManager.Instance.showLoadingBar();
         }
         if (StaticData.SaveTotalplayMatchCount)
         {
             StaticData.SaveTotalplayMatchCount = false;
             await UpdateTotalNumberOfMatch();
+        }
+        if (StaticData.SaveMapVal)
+        {
+            StaticData.SaveMapVal = false;
+            await UpdateMapValue(StaticData.mapVal);
+           
+            if (SceneManager.GetActiveScene().name == "MenuManager")
+                SplashScreenManager.Instance.showLoadingBar();
         }
     }
 
@@ -656,98 +680,15 @@ public class CloudSaveManager : MonoBehaviour
     }
 
 
-    /*
-    ///////////////////// setting nickname functionality
-    public InputField nickName;
-    public Button submitNickNameButton;
-    private const string NICKNAME_KEY = "player_nickname";
-    public GameObject nicknameSetPanel;
-    string nickname;
- 
-    async void setNickName()
-    {
-        nickname = nickName.text;
-        Debug.Log(nickname + " " + nickName.ToString());
-        await SetPlayerDisplayName(nickname);
-        await UpdateNicknameVal(1);
-    }
-    private async Task SetPlayerDisplayName(string playerName)
-    {
-        try
-        {
-            await AuthenticationService.Instance.UpdatePlayerNameAsync(playerName);
-            
-            Debug.Log($"Player name set to: {playerName}");
-        }
-        catch (Exception e)
-        {
-            Debug.LogError($"Failed to set player name: {e.Message}");
-        }
-    }
 
-
-    //save nickname methods
-    public async Task SaveNickname(int val)
-    {
-        try
-        {
-            var data = new Dictionary<string, object>
-            {
-                { NICKNAME_KEY, val }
-            };
-
-            await CloudSaveService.Instance.Data.ForceSaveAsync(data);
-            Debug.Log($"nickname saved successfully: {val}");
-        }
-        catch (Exception e)
-        {
-            Debug.LogError($"Error saving nickname: {e}");
-        }
-    }
-
-    // Fetch player's saved coins from Unity Cloud Save
-    public async Task<int> GetSavednicknameVal()
-    {
-        try
-        {
-            var savedData = await CloudSaveService.Instance.Data.LoadAsync(new HashSet<string> { NICKNAME_KEY });
-
-            if (savedData.ContainsKey(NICKNAME_KEY))
-            {
-                int val = Convert.ToInt32(savedData[NICKNAME_KEY]);
-                Debug.Log($"nickname loaded from cloud: {val}");
-                return val;
-            }
-            else
-            {
-                Debug.Log("No saved nickname found.");
-                return 0;  // Default if no coins are saved
-            }
-        }
-        catch (Exception e)
-        {
-            Debug.LogError($"Error loading nickname: {e}");
-            return 0;  // Default if there's an error
-        }
-    }
-    public async Task UpdateNicknameVal(int val)
-    {
-        int updatedval = val;
-
-        // Save the updated coin value back to Cloud Save
-        await SaveNickname(updatedval);
-
-        Debug.Log($"nickname updated. New total: {updatedval}");
-    }*/
-
-    // Save player's Score to Unity Cloud Save
+    // Save player's Difficulty Level to Unity Cloud Save
     public async Task SaveDifficultyLevel(int DS)
     {
         try
         {
             var data = new Dictionary<string, object>
             {
-                { Difficulti_Level_KEY, DS }
+                { DIFFICULTY_LEVEL_KEY, DS }
             };
 
             await CloudSaveService.Instance.Data.ForceSaveAsync(data);
@@ -764,11 +705,11 @@ public class CloudSaveManager : MonoBehaviour
     {
         try
         {
-            var savedData = await CloudSaveService.Instance.Data.LoadAsync(new HashSet<string> { Difficulti_Level_KEY });
+            var savedData = await CloudSaveService.Instance.Data.LoadAsync(new HashSet<string> { DIFFICULTY_LEVEL_KEY });
 
-            if (savedData.ContainsKey(Difficulti_Level_KEY))
+            if (savedData.ContainsKey(DIFFICULTY_LEVEL_KEY))
             {
-                int DF = Convert.ToInt32(savedData[Difficulti_Level_KEY]);
+                int DF = Convert.ToInt32(savedData[DIFFICULTY_LEVEL_KEY]);
                 difficultyLevel = DF;
                 Debug.Log($"Coins loaded from cloud: {DF}");
                 return DF;
@@ -853,6 +794,63 @@ public class CloudSaveManager : MonoBehaviour
 
         await SaveTotalNumberOfMatch(updatedmatchPlayed);
 
+    }
+    //save map value on cloud store
+
+    public async Task SaveMapVal(int MV)
+    {
+        try
+        {
+            var data = new Dictionary<string, object>
+            {
+                { SELECT_MAP_VAL, MV }
+            };
+
+            await CloudSaveService.Instance.Data.ForceSaveAsync(data);
+            Debug.Log($"Map value saved successfully: {MV}");
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"Error saving map value: {e}");
+        }
+    }
+
+    // Fetch player's saved coins from Unity Cloud Save
+    public async Task<int> GetSavedMapVal()
+    {
+        try
+        {
+            var savedData = await CloudSaveService.Instance.Data.LoadAsync(new HashSet<string> { SELECT_MAP_VAL });
+
+            if (savedData.ContainsKey(SELECT_MAP_VAL))
+            {
+                int MV = Convert.ToInt32(savedData[SELECT_MAP_VAL]);
+                mapValues = MV;
+                Debug.Log($"map value loaded from cloud: {MV}");
+                return MV;
+            }
+            else
+            {
+                return 0;  // Default if no coins are saved
+            }
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"Error loading map value: {e}");
+            return 0;  // Default if there's an error
+        }
+    }
+    public async Task UpdateMapValue(int mapVals)
+    {
+        // Fetch the current saved coins
+        int currentMapVal = await GetSavedMapVal();
+        int updatedMapVal = mapVals;
+        // UpdateLeaderBoard = true;
+        difficultyLevel = mapVals;
+        // Save the updated coin value back to Cloud Save
+        await SaveMapVal(updatedMapVal);
+
+        Debug.Log($"map value updated: {updatedMapVal}");
     }
 
 

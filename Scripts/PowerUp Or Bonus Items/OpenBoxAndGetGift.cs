@@ -17,7 +17,7 @@ public class OpenBoxAndGetGift : MonoBehaviour
     public GameObject[] mainGamePanels;
     public static bool isClosedMysteryBox;
     public Button openMysteryBoxButton;
-    public GameObject charBar;
+    
     public Button testBoxOpenButton;
 
     public Button[] buttonsToDisable;
@@ -28,8 +28,8 @@ public class OpenBoxAndGetGift : MonoBehaviour
         isClosedMysteryBox = false;
         isOpeningCreate = false;
         setActiveCharfalse();
-        //  testBoxOpenButton.onClick.AddListener(OpenBox);
-       // openMysteryBoxButton.onClick.AddListener(OpenBox);
+          testBoxOpenButton.onClick.AddListener(RewardedAdsExample.instance.ShowAd);
+        openMysteryBoxButton.onClick.AddListener(RewardedAdsExample.instance.ShowAd);
         instance = this; 
     }
     private void Update()
@@ -43,7 +43,7 @@ public class OpenBoxAndGetGift : MonoBehaviour
             giftBox.SetActive(false);
         }
         
-        Debug.Log("CloudSaveManager.instance.specialCarVal: " + CloudSaveManager.instance.specialCarVal);
+        Debug.Log("CloudSaveManager.Instance.specialCarVal: " + CloudSaveManager.instance.specialCarVal);
     }
     public void OpenBox()
     {

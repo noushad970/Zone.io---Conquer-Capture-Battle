@@ -123,8 +123,8 @@ public class RewardSystem : MonoBehaviour
         PlayerPrefs.SetString("LastClaimTimeAdsBox1", DateTime.Now.ToString());
         nextAdsBoxClaim = DateTime.Now.AddHours(RewardIntervalHours);
         UpdateUIAds();
-        //RewardedAdsExample.instance.ShowAd();
-        OpenBoxAndGetGift.instance.OpenBox();
+        RewardedAdsExample.instance.ShowAd();
+        //OpenBoxAndGetGift.instance.OpenBox();
     }
 
     

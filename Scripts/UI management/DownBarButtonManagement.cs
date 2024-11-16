@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class DownBarButtonManagement : MonoBehaviour
 {
+    public static DownBarButtonManagement Instance;
     public Button ItemStoreButton, CharStoreButton, PlayMenuButton, PowerUpMenuButton, ExitGameButton;
     public GameObject ItemStore, CharStore, PlayMenu, PowerUpMenu, ExitGame;
     public Button yesExitButton, NoExitButton;
@@ -18,6 +19,10 @@ public class DownBarButtonManagement : MonoBehaviour
             OpenBoxAndGetGift.isClosedMysteryBox = false;
             OnclickPlay(); 
         }
+    }
+    private void Awake()
+    {
+        Instance = this;
     }
     private void Start()
     {
@@ -73,7 +78,7 @@ public class DownBarButtonManagement : MonoBehaviour
         ExitGame.SetActive(false);
         characterPlaceObject.SetActive(true);
     }
-    void OnclickPlay()
+    public void OnclickPlay()
     {
         AudioManager.instance.playSwapSound();
         ItemStoreButton.enabled = true;

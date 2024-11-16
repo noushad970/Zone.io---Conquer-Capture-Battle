@@ -24,7 +24,7 @@ public class Character : MonoBehaviour
 	private MeshFilter areaFilter;
 	private MeshRenderer areaOutlineMeshRend;
 	private MeshFilter areaOutlineFilter;
-
+	
 	[Header("Movement")]
 	public float speed = 2f;
 	 float turnSpeed = 7f;
@@ -38,7 +38,7 @@ public class Character : MonoBehaviour
 	
 	// This will store the last attacker
 	Animator anim;
-	GameObject explode;
+	public GameObject explode;
 	private void Awake()
 	{
 		if(!player && CloudSaveManager.instance.difficultyLevel==1)
@@ -47,17 +47,7 @@ public class Character : MonoBehaviour
             speed = 2.5f;
         else if (!player && CloudSaveManager.instance.difficultyLevel == 3)
             speed = 3f;
-        Transform explodeTransform = transform.Find("Explode");
-		
-        if (explodeTransform!=null)
-		{
-            explode = explodeTransform.gameObject;
-          
-        }
-		else
-		{
-			Debug.Log("Not Found Explode");
-		}
+        
 		anim = GetComponent<Animator>();
 		rb = GetComponent<Rigidbody>();
 		trail = transform.Find("Trail").GetComponent<TrailRenderer>();
@@ -298,7 +288,7 @@ public class Character : MonoBehaviour
 		
 		if (!player)
 		{
-            StartCoroutine(playExplodeParticle());
+            playExplodeParticle();
 
 		}
 		else if(player)
@@ -306,9 +296,10 @@ public class Character : MonoBehaviour
             AudioManager.instance.PlayGameOverSound();
             VibrateController.instance.Buy();
         }
-        yield return new WaitForSeconds(1f);
+        
         if (player)
         {
+            yield return new WaitForSeconds(1f);
             GameManager.gm.GameOver();
 			StaticData.coinData = ((EnemySpawnerAI.totalPlayerEliminateByPlayer * 10 )+ (SceneTimeCounter.TotalTime / 4));
 			StaticData.SaveCoinData = true;
@@ -321,7 +312,7 @@ public class Character : MonoBehaviour
         }
         else
         {
-
+            yield return new WaitForSeconds(.1f);
             EnemySpawnerAI.totalEnemiesPresent -= 1;
             
             Destroy(gameObject);
@@ -335,17 +326,21 @@ public class Character : MonoBehaviour
     }
 	//
 	
-	IEnumerator playExplodeParticle()
+	void playExplodeParticle()
 	{
         if (explode != null)
-            explode.SetActive(true);
-		if (!AudioManager.instance.eliminateAenemy.isPlaying)
+        {
+            // Instantiate the object at this GameObject's position and rotation
+            GameObject instantiatedObject = Instantiate(explode, transform.position, transform.rotation);
+
+            // Destroy the instantiated object after 1 second
+            Destroy(instantiatedObject, 1f);
+        }
+        if (!AudioManager.instance.eliminateAenemy.isPlaying)
 			AudioManager.instance.playEliminateEnemySound();
         VibrateController.instance.Buy();
         EnemySpawnerAI.enemyStop=true;
-		yield return new WaitForSeconds(1f);
-        if (explode != null)
-            explode.SetActive(false);
+        
 
         EnemySpawnerAI.enemyStop = false;
         EnemySpawnerAI.totalPlayerEliminateByPlayer += 1;
